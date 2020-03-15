@@ -2,20 +2,26 @@ src = src
 obj = bin
 inc = $(src)/headers
 
+flags = -Wall -Wextra -Werror
+
+pch = $(inc)/pch.h
 target = $(obj)/bin
 
-opt = -O3
+opt = -O0
 
 source = $(wildcard $(src)/*.c)
 object = $(patsubst %,$(obj)/%, $(notdir $(source:.c=.o)))
 
 $(obj)/%.o: $(src)/%.c
-	gcc -c $^ -o $@ -I $(inc) $(opt)
+	gcc -c $^ -o $@ -I $(inc) $(opt) $(flags)
 
 $(target): $(object)
-	gcc $^ -o $@ -I $(inc) $(opt)
+	gcc $^ -o $@ -I $(inc) $(opt) $(flags)
 
-build: $(target)
+$(pch:.h=.h.gch): $(pch)
+	gcc -c $<
+
+build: $(target) $(pch:.h=.h.gch)
 
 raw:
 	$(eval opt=)
@@ -23,6 +29,9 @@ raw:
 clean:
 	rm -f $(obj)/bin
 	rm -f $(obj)/bin.exe
+
+verbose:
+	$(eval flags+=-H)
 
 cleans:
 	rm -f $(obj)/*

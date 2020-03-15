@@ -14,5 +14,5 @@ typedef struct TerminalCanvas
 
 typedef struct GameVariables
 {
-    int i;
+    uint32_t i;
 } GameVars_t, GameVariables_t;

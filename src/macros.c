@@ -1,6 +1,7 @@
 #include "pch.h"
+#include "macros.h"
 
-inline void setup_function()
+void terminal_setup()
 {
     system("color 0");
 }

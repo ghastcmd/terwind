@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "macros.h"
 #include "structs.h"
 
 TerDim_t terwind_get_dimensions()
@@ -40,14 +41,13 @@ TerminalCanvas_t terwind_create_buffer(TerminalDimensions_t dims)
 
 TerminalCanvas_t terwind_get_canvas()
 {
-    INIT;
     register TerDim_t dims = terwind_get_dimensions();
     return terwind_create_buffer(dims);
 }
 
 TerminalCanvas_t* wnd_buffer = NULL;
 
-inline void terwind_set_buffer(TerminalCanvas_t* wnd)
+void terwind_set_buffer(TerminalCanvas_t* wnd)
 {
     wnd_buffer = wnd;
 }
@@ -61,24 +61,22 @@ void terwind_fill_canvas(const char key)
     }
 }
 
-inline void terwind_draw_canvas()
+void terwind_draw_canvas()
 {
     printf("%s\r\x1b[0d", wnd_buffer->canvas_grid);
 }
 
-void terwind_put_pixel(int x, int y, char key)
+void terwind_put_pixel(uint32_t x, uint32_t y, char key)
 {
     assert(wnd_buffer->dim.width >= x);
     assert(wnd_buffer->dim.height >= y);
-    assert(x >= 0);
-    assert(y >= 0);
     
     register int pos = wnd_buffer->dim.width * y + x;
     wnd_buffer->canvas_grid[pos] = key;
 }
 
-inline void draw_func();
-inline void update_func();
+void terwind_draw_func();
+void terwind_update_func();
 
 void terwind_game_loop(const int fps_cap)
 {
@@ -86,7 +84,7 @@ void terwind_game_loop(const int fps_cap)
     register const int fps_tick = 1000 / fps_cap;
     struct timespec tim, tim2;
 
-    struct GameVariables vars;
+    struct GameVariables vars = { 0 };
 
     while(1)
     {
@@ -109,12 +107,12 @@ void terwind_game_loop(const int fps_cap)
     }
 }
 
-inline void terwind_draw_func(const GameVars_t* vars)
+void terwind_draw_func(const GameVars_t* vars)
 {
     terwind_put_pixel(vars->i, 4, 94);
 }
 
-inline void terwind_update_func(GameVars_t* vars)
+void terwind_update_func(GameVars_t* vars)
 {
     vars->i++;
     if (vars->i >= wnd_buffer->dim.width)
@@ -125,6 +123,7 @@ inline void terwind_update_func(GameVars_t* vars)
 
 int main()
 {
+    terminal_setup();
     TerminalCanvas_t wnd = terwind_get_canvas();
     terwind_set_buffer(&wnd);
 

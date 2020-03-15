@@ -8,11 +8,6 @@
 #ifdef _WIN32
 #include <windows.h>
 
-#define sleep(num) Sleep(num * 1000)
-
-void setup_function();
-#define INIT setup_function()
-
 #else
 #include <sys/ioctl.h>
 #include <unistd.h>
