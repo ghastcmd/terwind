@@ -4,6 +4,6 @@
 void terminal_setup();
 
 #else
-#define setup_func() {};
+#define terminal_setup() 
 
 #endif

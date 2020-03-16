@@ -21,7 +21,10 @@ $(target): $(object)
 $(pch:.h=.h.gch): $(pch)
 	gcc -c $<
 
-build: $(target) $(pch:.h=.h.gch)
+build: $(obj) $(target) $(pch:.h=.h.gch)
+
+bin:
+	mkdir bin
 
 raw:
 	$(eval opt=)
@@ -30,14 +33,11 @@ clean:
 	rm -f $(obj)/bin
 	rm -f $(obj)/bin.exe
 
-verbose:
-	$(eval flags+=-H)
-
 cleans:
 	rm -f $(obj)/*
 
-init:
-	mkdir bin
+verbose:
+	$(eval flags+=-H)
 
 tst:
 	@echo $(source)

@@ -78,33 +78,50 @@ void terwind_put_pixel(uint32_t x, uint32_t y, char key)
 void terwind_draw_func();
 void terwind_update_func();
 
+uint64_t get_ticks()
+{
+    // clock_t tick = clock();
+    // uint64_t al = (uint64_t)1000000000*((float)tick / CLOCKS_PER_SEC);
+    // printf("tick: %li ret: %"PRIu64"\n", tick, al);
+    // return al;
+    return (uint64_t)1000000000*((float)clock() / CLOCKS_PER_SEC);
+}
+
 void terwind_game_loop(const int fps_cap)
 {
-    register clock_t starting_tick;
-    register const int fps_tick = 1000 / fps_cap;
+    const uint64_t fps_tick = 1000000000 / fps_cap;
     struct timespec tim, tim2;
 
     struct GameVariables vars = { 0 };
 
+    FILE* dat = fopen("fps.dat", "w+");
+
+    // for (int i = 0; i < 10000; i++);
+    // printf("ticks: %"PRIu64"\n", get_ticks());
+
+    register uint64_t starting_tick, ending_tick;
     while(1)
     {
-        starting_tick = clock();
+        starting_tick = get_ticks();
 
-        terwind_fill_canvas(219);
+        terwind_fill_canvas('#');
 
         terwind_update_func(&vars);
         terwind_draw_func(&vars);
 
         terwind_draw_canvas();
 
-        register clock_t ending_tick = clock() - starting_tick;
+        ending_tick = get_ticks() - starting_tick;
         if (fps_tick > ending_tick)
         {
             tim.tv_sec = 0;
-            tim.tv_nsec = (fps_tick - ending_tick) * 1000000;
+            tim.tv_nsec = (fps_tick - ending_tick);
+            fprintf(dat, "fps_tick: %"PRIu64" starting: %"PRIu64" ending: %"PRIu64" delay: %li\n", fps_tick, starting_tick, ending_tick, tim.tv_nsec);
             nanosleep(&tim, &tim2);
         }
     }
+
+    fclose(dat);
 }
 
 void terwind_draw_func(const GameVars_t* vars)
@@ -119,6 +136,8 @@ void terwind_update_func(GameVars_t* vars)
     {
         vars->i = 0;
     }
+
+    // for (int i = 0; i < 1000000; i++);
 }
 
 int main()
