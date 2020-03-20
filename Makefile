@@ -29,6 +29,12 @@ bin:
 raw:
 	$(eval opt=)
 
+release:
+	$(eval opt+= -DRELEASE)
+
+ter_debug:
+	$(eval opt+= -DTER_DEBUG)
+
 clean:
 	rm -f $(obj)/bin
 	rm -f $(obj)/bin.exe

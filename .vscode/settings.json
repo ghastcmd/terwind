@@ -1,6 +1,10 @@
 {
     "files.associations": {
         "*.html": "html",
-        "macros.h": "c"
+        "macros.h": "c",
+        "pch.h": "c",
+        "stdio.h": "c",
+        "stdbool.h": "c",
+        "logg.h": "c"
     }
 }

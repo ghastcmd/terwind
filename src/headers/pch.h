@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <time.h>
 #include <inttypes.h>
+#include <stdarg.h>
 
 #ifdef _WIN32
 #include <windows.h>
