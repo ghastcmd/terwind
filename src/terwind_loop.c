@@ -11,7 +11,7 @@ void terwind_game_loop(const int fps_cap)
     const uint64_t fps_tick = 1000000000 / fps_cap;
     struct timespec tim, tim2;
 
-    struct GameVariables vars = { 0 };
+    GameVariables_t vars = { 0 };
 
     logg_terminal("ticks: %"PRIu64"\n", terwind_get_ticks());
 

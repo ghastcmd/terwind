@@ -37,7 +37,7 @@ void terminal_setup()
 
 void terminal_reset()
 {
-    printf("\x1b[0m");
+    printf("\x1b[0m\x1b[0d");
 
     if(!SetConsoleMode(hd_stdout, out_mode_init))
     {

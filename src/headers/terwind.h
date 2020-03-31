@@ -7,7 +7,7 @@ TerminalCanvas_t terwind_create_buffer(TerminalDimensions_t dims);
 
 TerminalCanvas_t terwind_get_canvas();
 
-void terwind_free(TerminalCanvas_t wnd);
+void terwind_free();
 
 void terwind_set_buffer(TerminalCanvas_t* wnd);
 

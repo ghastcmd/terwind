@@ -4,8 +4,22 @@
 #include "terwind.h"
 #include "logg.h"
 
+void main_exit_cleanup(int signo)
+{
+    if (signo == SIGINT)
+    {
+        terwind_fill_canvas(' ');
+        terwind_draw_canvas();
+        terminal_reset();
+        terwind_free();
+        logg_close();
+        exit(0);
+    }
+}
+
 int main()
 {
+    signal(SIGINT, main_exit_cleanup);
     terminal_setup();
     logg_setup(1, "fps.dat");
 
@@ -16,8 +30,6 @@ int main()
 
     terwind_game_loop(60);
 
-    terwind_free(wnd);
-    terminal_reset();
-    logg_close();
+    main_exit_cleanup(SIGINT);
     return 0;
 }

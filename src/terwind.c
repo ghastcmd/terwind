@@ -1,4 +1,5 @@
 #include "terwind.h"
+#include "logg.h"
 
 TerDim_t terwind_get_dimensions()
 {
@@ -28,7 +29,7 @@ TerDim_t terwind_get_dimensions()
 TerminalCanvas_t terwind_create_buffer(TerminalDimensions_t dims)
 {
     int max = dims.width * dims.height;
-    char* grid = (char*)calloc(max, sizeof(char));
+    char* grid = (char*)calloc(max + 1, sizeof(char));
 
     return (TerminalCanvas_t)
     {
@@ -45,9 +46,9 @@ TerminalCanvas_t terwind_get_canvas()
 
 TerminalCanvas_t* wnd_buffer = NULL;
 
-void terwind_free(TerminalCanvas_t wnd)
+void terwind_free()
 {
-    free(wnd.canvas_grid);
+    free(wnd_buffer->canvas_grid);
 }
 
 void terwind_set_buffer(TerminalCanvas_t* wnd)
@@ -82,9 +83,11 @@ void terwind_put_pixel(uint32_t x, uint32_t y, char key)
 
 uint64_t terwind_get_ticks()
 {
-    // clock_t tick = clock();
-    // uint64_t al = (uint64_t)1000000000*((float)tick / CLOCKS_PER_SEC);
-    // printf("tick: %li ret: %"PRIu64"\n", tick, al);
-    // return al;
+#ifdef TER_DEBUG
+    clock_t tick = clock();
+    uint64_t al = (uint64_t)1000000000*((float)tick / CLOCKS_PER_SEC);
+    logg_terminal("tick: %li ret: %"PRIu64"\n", tick, al);
+    return al;
+#endif
     return (uint64_t)1000000000*((float)clock() / CLOCKS_PER_SEC);
 }
