@@ -7,19 +7,16 @@ TerminalCanvas_t terwind_create_buffer(TerminalDimensions_t dims);
 
 TerminalCanvas_t terwind_get_canvas();
 
+void terwind_free(TerminalCanvas_t wnd);
+
 void terwind_set_buffer(TerminalCanvas_t* wnd);
 
 void terwind_fill_canvas(const char key);
 
+#ifndef TER_DEBUG
 void terwind_draw_canvas();
-
-#ifdef TER_DEBUG
-#define logg_terminal(fmt, ...) printf(fmt, __VA_ARGS__)
-#define terwind_draw_canvas()
-#define TER_WND(x)
 #else
-#define TER_WND(x) x
-#define logg_terminal(fmt, ...)
+#define terwind_draw_canvas()
 #endif
 
 void terwind_put_pixel(uint32_t x, uint32_t y, char key);

@@ -1,5 +1,7 @@
 #include "logg.h"
 
+#ifdef LOGG
+
 static FILE** file_list;
 static size_t file_list_size;
 
@@ -8,6 +10,7 @@ enum fileno
     loggno_status,
     loggno_default,
 };
+
 
 void logg_setup(const uint32_t size, ...)
 {
@@ -83,3 +86,5 @@ void logg_close()
  * logg_fileno(enum fileno, char* restrict, ...); 
 */
 //
+
+#endif

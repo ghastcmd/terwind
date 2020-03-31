@@ -45,9 +45,9 @@ TerminalCanvas_t terwind_get_canvas()
 
 TerminalCanvas_t* wnd_buffer = NULL;
 
-TerminalCanvas_t* terwind_get_wnd_buffer()
+void terwind_free(TerminalCanvas_t wnd)
 {
-    return wnd_buffer;
+    free(wnd.canvas_grid);
 }
 
 void terwind_set_buffer(TerminalCanvas_t* wnd)
@@ -64,10 +64,12 @@ void terwind_fill_canvas(const char key)
     }
 }
 
+#ifndef TER_DEBUG
 void terwind_draw_canvas()
 {
     printf("%s\r\x1b[0d", wnd_buffer->canvas_grid);
 }
+#endif
 
 void terwind_put_pixel(uint32_t x, uint32_t y, char key)
 {

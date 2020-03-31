@@ -5,6 +5,8 @@
         "pch.h": "c",
         "stdio.h": "c",
         "stdbool.h": "c",
-        "logg.h": "c"
+        "logg.h": "c",
+        "windows.h": "c",
+        "terminal.h": "c"
     }
 }

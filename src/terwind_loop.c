@@ -25,7 +25,7 @@ void terwind_game_loop(const int fps_cap)
         terwind_update_func(&vars);
         terwind_draw_func(&vars);
 
-        TER_WND(terwind_draw_canvas());
+        terwind_draw_canvas();
 
         ending_tick = terwind_get_ticks() - starting_tick;
         if (fps_tick > ending_tick)
