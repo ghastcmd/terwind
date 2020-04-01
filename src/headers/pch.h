@@ -13,7 +13,9 @@
 
 #else
 #include <sys/ioctl.h>
+#include <pthread.h>
 #include <unistd.h>
+#include <termios.h>
 
 #define INIT
 

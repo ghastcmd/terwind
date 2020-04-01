@@ -69,6 +69,7 @@ void terwind_fill_canvas(const char key)
 void terwind_draw_canvas()
 {
     printf("%s\r\x1b[0d", wnd_buffer->canvas_grid);
+    fflush(stdout);
 }
 #endif
 

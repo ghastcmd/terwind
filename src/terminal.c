@@ -2,9 +2,6 @@
 
 #ifdef _WIN32
 
-#include <windows.h>
-// #include <consoleapi.h>
-
 static HANDLE hd_stdout;
 static DWORD out_mode_init;
 
@@ -15,49 +12,47 @@ void terminal_setup()
     DWORD out_mode = 0;
     hd_stdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
-    if (hd_stdout == INVALID_HANDLE_VALUE)
-    {
-        exit(GetLastError());
-    }
-
-    if (!GetConsoleMode(hd_stdout, &out_mode))
-    {
-        exit(GetLastError());
-    }
-
+    GetConsoleMode(hd_stdout, &out_mode);
+    
     out_mode_init = out_mode;
 
     out_mode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
 
-    if (!SetConsoleMode(hd_stdout, out_mode))
-    {
-        exit(GetLastError());
-    }
+    SetConsoleMode(hd_stdout, out_mode);
+    
+    // setbuf(stdout, NULL);
 }
 
 void terminal_reset()
 {
     printf("\x1b[0m\x1b[0d");
 
-    if(!SetConsoleMode(hd_stdout, out_mode_init))
-    {
-        exit(GetLastError());
-    }
+    SetConsoleMode(hd_stdout, out_mode_init);
 }
 
 #else
 
-#include <termios.h>
-#include <unistd.h>
+static struct termios term_old;
 
 void terminal_setup()
 {
+    struct termios term_new;
+    tcgetattr(STDIN_FILENO, &term_old);
 
+    term_new = term_old;
+
+    term_new.c_lflag &= ~(ECHO | ICANON);
+
+    tcsetattr(STDIN_FILENO, TCSANOW, &term_new);
+
+    setbuf(stdout, NULL);
 }
 
 void terminal_reset()
 {
-    
+    printf("\x1b[0m\x1b[0d");
+
+    tcsetattr(STDIN_FILENO, TCSANOW, &term_old);
 }
 
 #endif

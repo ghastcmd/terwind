@@ -4,10 +4,14 @@ inc = $(src)/headers
 
 flags = -Wall -Wextra -Werror
 
+ifneq ($(OS), Windows_NT)
+	flags+=-lpthread
+endif
+
 pch = $(inc)/pch.h
 target = $(obj)/bin
 
-opt = -O0
+opt=
 
 source = $(wildcard $(src)/*.c)
 object = $(patsubst %,$(obj)/%, $(notdir $(source:.c=.o)))
@@ -26,14 +30,17 @@ build: $(obj) $(target) $(pch:.h=.h.gch)
 bin:
 	mkdir bin
 
-raw:
-	$(eval opt=)
+optimize:
+	$(eval opt+=-O3)
 
-release:
-	$(eval opt+= -DRELEASE)
+release: optimize
+	$(eval opt+=-DRELEASE)
+
+logg:
+	$(eval opt+=-DLOGG)
 
 ter_debug:
-	$(eval opt+= -DTER_DEBUG)
+	$(eval opt+=-DTER_DEBUG)
 
 clean:
 	rm -f $(obj)/bin
@@ -46,10 +53,12 @@ verbose:
 	$(eval flags+=-H)
 
 tst:
-	@echo $(source)
-	@echo $(object)
-	@echo $(inc)
-	@echo $(target)
+	@echo "sources:" $(source)
+	@echo "objects:" $(object)
+	@echo "include:" $(inc)
+	@echo "targets:" $(target)
+	@echo "flags:  " $(flags)
+	@echo "opt:    " $(opt)
 
 run: build
 	@$(obj)/bin

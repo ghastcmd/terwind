@@ -32,7 +32,7 @@ void terwind_game_loop(const int fps_cap)
         {
             tim.tv_sec = 0;
             tim.tv_nsec = (fps_tick - ending_tick);
-            logg_status("fps_tick: %"PRIu64" starting: %"PRIu64" ending: %"PRIu64" delay: %li\n", fps_tick, starting_tick, ending_tick, tim.tv_nsec);
+            logg_status("fps_tick: %10"PRIu64" starting: %10"PRIu64" ending: %10"PRIu64" delay: %8li\n", fps_tick, starting_tick, ending_tick, tim.tv_nsec);
             nanosleep(&tim, &tim2);
         }
     }
