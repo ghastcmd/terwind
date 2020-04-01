@@ -7,6 +7,8 @@
         "stdbool.h": "c",
         "logg.h": "c",
         "windows.h": "c",
-        "terminal.h": "c"
+        "terminal.h": "c",
+        "stdint.h": "c",
+        "thread.h": "c"
     }
 }

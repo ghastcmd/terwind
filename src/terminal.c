@@ -5,7 +5,9 @@
 static HANDLE hd_stdout;
 static DWORD out_mode_init;
 
+#ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
 #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
+#endif
 
 void terminal_setup()
 {
@@ -19,8 +21,6 @@ void terminal_setup()
     out_mode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
 
     SetConsoleMode(hd_stdout, out_mode);
-    
-    // setbuf(stdout, NULL);
 }
 
 void terminal_reset()
@@ -45,7 +45,7 @@ void terminal_setup()
 
     tcsetattr(STDIN_FILENO, TCSANOW, &term_new);
 
-    setbuf(stdout, NULL);
+    setbuf(stdout, NULL); //  disables stdout buffer
 }
 
 void terminal_reset()
@@ -53,6 +53,28 @@ void terminal_reset()
     printf("\x1b[0m\x1b[0d");
 
     tcsetattr(STDIN_FILENO, TCSANOW, &term_old);
+}
+
+int getch(void)
+{
+    char ret;
+    read(STDIN_FILENO, &ret, 1);
+    return ret;
+}
+
+int kbhit (void)
+{
+    struct timeval tv;
+    fd_set rdfs;
+
+    tv.tv_sec = 0;
+    tv.tv_usec = 0;
+
+    FD_ZERO(&rdfs);
+    FD_SET(STDIN_FILENO, &rdfs);
+
+    select(STDIN_FILENO+1, &rdfs, NULL, NULL, &tv);
+    return FD_ISSET(STDIN_FILENO, &rdfs);
 }
 
 #endif
