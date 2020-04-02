@@ -14,8 +14,6 @@
 
 #else
 #include <sys/ioctl.h>
-#include <sys/types.h>
-#include <sys/time.h>
 
 #include <pthread.h>
 #include <unistd.h>

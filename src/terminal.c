@@ -2,9 +2,6 @@
 
 #ifdef _WIN32
 
-static HANDLE hd_stdout;
-static DWORD out_mode_init;
-
 #ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
 #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
 #endif
@@ -12,12 +9,10 @@ static DWORD out_mode_init;
 void terminal_setup()
 {
     DWORD out_mode = 0;
-    hd_stdout = GetStdHandle(STD_OUTPUT_HANDLE);
+    HANDLE hd_stdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
     GetConsoleMode(hd_stdout, &out_mode);
     
-    out_mode_init = out_mode;
-
     out_mode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
 
     SetConsoleMode(hd_stdout, out_mode);
@@ -25,25 +20,28 @@ void terminal_setup()
 
 void terminal_reset()
 {
-    printf("\x1b[0m\x1b[0d");
+    printf("\x1b[0m\x1b[0d"); // resets color and cursor position
 
-    SetConsoleMode(hd_stdout, out_mode_init);
+    DWORD out_mode = 0;
+    HANDLE hd_stdout = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    GetConsoleMode(hd_stdout, &out_mode);
+
+    out_mode &= ~ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+
+    SetConsoleMode(hd_stdout, out_mode);
 }
 
 #else
 
-static struct termios term_old;
-
 void terminal_setup()
 {
-    struct termios term_new;
-    tcgetattr(STDIN_FILENO, &term_old);
+    struct termios term;
+    tcgetattr(STDIN_FILENO, &term);
 
-    term_new = term_old;
+    term.c_lflag &= ~(ECHO | ICANON);
 
-    term_new.c_lflag &= ~(ECHO | ICANON);
-
-    tcsetattr(STDIN_FILENO, TCSANOW, &term_new);
+    tcsetattr(STDIN_FILENO, TCSANOW, &term);
 
     setbuf(stdout, NULL); //  disables stdout buffer
 }
@@ -52,7 +50,13 @@ void terminal_reset()
 {
     printf("\x1b[0m\x1b[0d");
 
-    tcsetattr(STDIN_FILENO, TCSANOW, &term_old);
+    struct termios term;
+
+    tcgetattr(STDIN_FILENO, &term);
+
+    term.c_lflag |= (ECHO | ICANON);
+
+    tcsetattr(STDIN_FILENO, TCSANOW, &term);
 }
 
 int getch(void)
@@ -64,17 +68,9 @@ int getch(void)
 
 int kbhit (void)
 {
-    struct timeval tv;
-    fd_set rdfs;
-
-    tv.tv_sec = 0;
-    tv.tv_usec = 0;
-
-    FD_ZERO(&rdfs);
-    FD_SET(STDIN_FILENO, &rdfs);
-
-    select(STDIN_FILENO+1, &rdfs, NULL, NULL, &tv);
-    return FD_ISSET(STDIN_FILENO, &rdfs);
+    int remaining_bytes;
+    ioctl(STDIN_FILENO, FIONREAD, &remaining_bytes);
+    return remaining_bytes > 0;
 }
 
 #endif

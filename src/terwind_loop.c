@@ -1,5 +1,6 @@
 #include "terwind.h"
 #include "logg.h"
+#include "thread.h"
 
 void terwind_draw_func(const GameVars_t* vars);
 void terwind_update_func(GameVars_t* vars);
@@ -12,8 +13,11 @@ void terwind_game_loop(const int fps_cap)
     struct timespec tim, tim2;
 
     GameVariables_t vars = { 0 };
+    vars.i = 1;
 
     logg_terminal("ticks: %"PRIu64"\n", terwind_get_ticks());
+
+    thread_t async_thread = thread_init_async_input();
 
     register uint64_t starting_tick, ending_tick;
     while(!vars.stop)
@@ -36,18 +40,36 @@ void terwind_game_loop(const int fps_cap)
             nanosleep(&tim, &tim2);
         }
     }
-}
 
-void terwind_draw_func(const GameVars_t* vars)
-{
-    terwind_put_pixel(vars->i, 4, 94);
+    thread_terminate(async_thread);
 }
 
 void terwind_update_func(GameVars_t* vars)
 {
-    vars->i++;
-    if (vars->i >= wnd_buffer->dim.width)
+    kbd_keys_t key = thread_get_async_input();
+    // if (key == kb_esc) vars->stop = true;
+
+    if (key == kb_right_arrow)
     {
-        vars->i = 0;
+        vars->i = !(vars->i);
+        vars->j = !(vars->j);
     }
+
+    vars->x_pos += vars->i;
+    vars->y_pos += vars->j;
+
+    if (vars->x_pos >= wnd_buffer->dim.width)
+    {
+        vars->x_pos = 0;
+    }
+
+    if (vars->y_pos >= wnd_buffer->dim.height)
+    {
+        vars->y_pos = 0;
+    }
+}
+
+void terwind_draw_func(const GameVars_t* vars)
+{
+    terwind_put_pixel(vars->x_pos, vars->y_pos, 94);
 }

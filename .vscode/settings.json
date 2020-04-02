@@ -9,6 +9,10 @@
         "windows.h": "c",
         "terminal.h": "c",
         "stdint.h": "c",
-        "thread.h": "c"
+        "thread.h": "c",
+        "terwind.h": "c",
+        "structs.h": "c",
+        "ioctl.h": "c",
+        "ioctls.h": "c"
     }
 }

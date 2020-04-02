@@ -56,6 +56,8 @@ static thread_ret_t thread_async_input(void* token)
         {
             emmit(getch(), token);
         }
+
+        if (*(kbd_keys_t*)token == kb_ctrl_c) raise(SIGINT);
     }
 
     return (thread_ret_t)0;
