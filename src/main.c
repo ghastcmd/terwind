@@ -6,14 +6,18 @@
 
 void main_exit_cleanup(int signo)
 {
-    if (signo == SIGINT)
+    switch (signo)
     {
+    case SIGINT:
         terwind_fill_canvas(' ');
         terwind_draw_canvas();
         terminal_reset();
         terwind_free();
         logg_close();
         exit(0);
+    default:
+        perror("undefined behaviour\n");
+        exit(-1);
     }
 }
 
@@ -30,6 +34,5 @@ int main()
 
     terwind_game_loop(60);
 
-    main_exit_cleanup(SIGINT);
-    return 0;
+    raise(SIGINT);
 }

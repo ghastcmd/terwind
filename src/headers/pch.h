@@ -9,15 +9,21 @@
 #include <signal.h>
 
 #ifdef _WIN32
-#include <windows.h>
+#include <Windows.h>
 #include <conio.h>
+
+#include <direct.h>
+#include <AccCtrl.h>
+#include <AclAPI.h>
 
 #else
 #include <sys/ioctl.h>
+#include <sys/stat.h>
 
-#include <pthread.h>
 #include <unistd.h>
+#include <pthread.h>
 #include <termios.h>
+#include <dirent.h>
 
 #define INIT
 
