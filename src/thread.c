@@ -32,6 +32,8 @@ void thread_terminate(thread_t thread)
 #ifdef _WINDOWS_
     TerminateThread(thread, 0);
 #else
+    pthread_kill(thread, SIGKILL);
+    pthread_join(thread, NULL);
     pthread_cancel(thread);
 #endif
 
@@ -72,7 +74,19 @@ kbd_keys_t thread_get_async_input()
     return ret;
 }
 
+thread_t* thread_async_input_handle;
+
 thread_t thread_init_async_input()
 {
     return thread_create(thread_async_input, &async_token);
+}
+
+void thread_buffer_async_input_handle(thread_t* thread)
+{
+    thread_async_input_handle = thread;
+}
+
+void thread_terminate_buffered_async_input()
+{
+    thread_terminate(*thread_async_input_handle);
 }

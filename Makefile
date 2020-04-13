@@ -25,7 +25,7 @@ $(target): $(object)
 $(pch:.h=.h.gch): $(pch)
 	gcc -c $<
 
-build: $(obj) $(target) $(pch:.h=.h.gch)
+build: $(pch:.h=.h.gch) $(obj) $(target)
 
 bin:
 	mkdir bin
@@ -43,8 +43,8 @@ ter_debug:
 	$(eval opt+=-DTER_DEBUG)
 
 clean:
-	rm -f $(obj)/bin
 	rm -f $(obj)/bin.exe
+	rm -f $(obj)/bin
 
 cleans:
 	rm -f $(obj)/*
@@ -65,3 +65,11 @@ run: build
 
 dump: build
 	objdump -M intel -d $(obj)/main.o
+
+valgrind: build
+	valgrind --leak-check=full ./bin/bin
+
+help:
+	@echo run dump tst verbose
+	@echo clean cleans logg
+	@echo release optimize bin build

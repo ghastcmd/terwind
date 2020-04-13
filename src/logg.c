@@ -32,6 +32,7 @@ void logg_setup(const uint32_t size, ...)
 
 void __logg_fileno_list__(const enum fileno fileno, const char* fmt, va_list args)
 {
+    assert(file_list[fileno] != NULL);
     vfprintf(file_list[fileno], fmt, args);
 }
 
@@ -70,11 +71,12 @@ void logg_fileno(const enum fileno fileno, const char* fmt, ...)
 
 void logg_close()
 {
-    register int size = file_list_size;
-    for (int i = 0; i < size; i++)
+    for (size_t i = 0; i < file_list_size; i++)
     {
         fclose(file_list[i]);
     }
+
+    free(file_list);
 }
 
 /*

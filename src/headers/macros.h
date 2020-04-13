@@ -5,7 +5,7 @@
 #endif
 
 #ifdef DEBUG
-// #define LOGG
+#define LOGG
 #endif
 
 #ifdef _WIN32
