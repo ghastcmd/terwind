@@ -6,6 +6,7 @@
 #include <time.h>
 #include <inttypes.h>
 #include <stdarg.h>
+#include <signal.h>
 
 #ifdef _WIN32
 #include <Windows.h>
