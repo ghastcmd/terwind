@@ -58,8 +58,6 @@ static thread_ret_t thread_async_input(void* token)
         {
             emmit(getch(), token);
         }
-
-        if (*(kbd_keys_t*)token == kb_ctrl_c) raise(SIGINT);
     }
 
     return (thread_ret_t)0;
@@ -79,14 +77,4 @@ thread_t* thread_async_input_handle;
 thread_t thread_init_async_input()
 {
     return thread_create(thread_async_input, &async_token);
-}
-
-void thread_buffer_async_input_handle(thread_t* thread)
-{
-    thread_async_input_handle = thread;
-}
-
-void thread_terminate_buffered_async_input()
-{
-    thread_terminate(*thread_async_input_handle);
 }

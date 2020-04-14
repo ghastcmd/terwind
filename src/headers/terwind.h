@@ -21,6 +21,6 @@ void terwind_draw_canvas();
 
 void terwind_put_pixel(uint32_t x, uint32_t y, char key);
 
-uint64_t terwind_get_ticks();
+uint32_t terwind_get_ticks();
 
 void terwind_game_loop(const int fps_cap);

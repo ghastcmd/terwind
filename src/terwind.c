@@ -82,13 +82,13 @@ void terwind_put_pixel(uint32_t x, uint32_t y, char key)
     wnd_buffer->canvas_grid[pos] = key;
 }
 
-uint64_t terwind_get_ticks()
+uint32_t terwind_get_ticks()
 {
 #ifdef TER_DEBUG
     clock_t tick = clock();
-    uint64_t al = (uint64_t)1000000000*((float)tick / CLOCKS_PER_SEC);
+    uint64_t al = (uint64_t)1000000*((float)tick / CLOCKS_PER_SEC);
     logg_terminal("tick: %li ret: %"PRIu64"\n", tick, al);
     return al;
 #endif
-    return (uint64_t)1000000000*((float)clock() / CLOCKS_PER_SEC);
+    return (uint32_t)1000000*((float)clock() / CLOCKS_PER_SEC);
 }
