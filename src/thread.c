@@ -40,7 +40,7 @@ void thread_terminate(thread_t thread)
     // TODO: Error handling
 }
 
-static inline void emmit(unsigned char byte, int* smt)
+static inline void emmit(unsigned char byte, kbd_keys_t* smt)
 {
     *smt = (*smt << 8) | byte;
 }
@@ -77,4 +77,23 @@ thread_t* thread_async_input_handle;
 thread_t thread_init_async_input()
 {
     return thread_create(thread_async_input, &async_token);
+}
+
+void thread_test_keys()
+{
+    unsigned char kb_key;
+    kbd_keys_t token;
+    while(token != kb_esc)
+    {
+        kb_key = getch();
+        token = 0;
+        emmit(kb_key == 0 ? 0xf0 : kb_key, &token);
+
+        while (kbhit())
+        {
+            emmit(getch(), &token);
+        }
+
+        printf("%i\n", token);
+    }
 }

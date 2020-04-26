@@ -16,7 +16,11 @@ int main()
     TerminalCanvas_t wnd = terwind_get_canvas();
     terwind_set_buffer(&wnd);
 
+#ifdef KEY_TEST
+    thread_test_keys();
+#else
     terwind_game_loop(60);
+#endif
 
     main_exit(SIGINT);
 }

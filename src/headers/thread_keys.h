@@ -148,20 +148,20 @@ typedef enum keyboard_keys
 #endif
 
 #ifdef _WIN32
-    kb_up_arrow = 61512,
-    kb_left_arrow = 61515,
-    kb_right_arrow = 61517,
-    kb_bottom_arrow = 61520,
+    kb_up_arrow = 57416,
+    kb_left_arrow = 57419,
+    kb_right_arrow = 57421,
+    kb_bottom_arrow = 57424,
 
     kb_return = 13,
 
-    kb_home = 61511,
-    kb_page_up = 61513,
-    kb_end = 61519,
-    kb_page_down = 61521,
+    kb_home = 57415,
+    kb_page_up = 57417,
+    kb_end = 57423,
+    kb_page_down = 57425,
 
-    kb_insert = 61522,
-    kb_del = 61523,
+    kb_insert = 57426,
+    kb_del = 57427,
 
     kb_f1 = 61499,
     kb_f2,

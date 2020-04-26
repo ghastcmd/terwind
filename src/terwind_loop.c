@@ -17,7 +17,7 @@ void terwind_game_loop(const int fps_cap)
 
     thread_t async_thread = thread_init_async_input();
 
-    register uint32_t starting_tick, ending_tick = fps_tick;
+    register uint32_t starting_tick, ending_tick;
     float delta_time;
     while(!vars.stop)
     {
@@ -28,7 +28,7 @@ void terwind_game_loop(const int fps_cap)
 
         terwind_fill_canvas(' ');
 
-        delta_time = (float)(fps_tick - (ending_tick - starting_tick)) / 100000;
+        delta_time = (float)(fps_tick - (starting_tick - terwind_get_ticks())) / 1000000;
         terwind_update_func(&vars, key, delta_time);
         terwind_draw_func(&vars);
 

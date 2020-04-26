@@ -2,3 +2,4 @@ bin/
 *.gch
 *.dat
 .vscode/*
+samples.c

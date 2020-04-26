@@ -21,3 +21,5 @@ void thread_terminate(thread_t thread);
 thread_t thread_init_async_input();
 
 kbd_keys_t thread_get_async_input();
+
+void thread_test_keys();
