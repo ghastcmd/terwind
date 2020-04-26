@@ -49,8 +49,6 @@ void terwind_game_loop(const int fps_cap)
 
 void terwind_update_func(GameVars_t* vars, kbd_keys_t key, float delta_time)
 {
-    if (key == kb_esc) vars->stop = true;
-
     if (key == kb_right_arrow)
     {
         vars->i = !(vars->i);
