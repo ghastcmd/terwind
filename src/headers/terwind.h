@@ -1,4 +1,4 @@
-#include "pch.h"
+#pragma once
 #include "structs.h"
 
 TerDim_t terwind_get_dimensions();

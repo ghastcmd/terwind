@@ -13,6 +13,7 @@
         "terwind.h": "c",
         "structs.h": "c",
         "ioctl.h": "c",
-        "ioctls.h": "c"
+        "ioctls.h": "c",
+        "files.h": "c"
     }
 }

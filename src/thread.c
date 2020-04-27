@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "thread.h"
 #include "terminal.h"
 
@@ -82,7 +83,7 @@ thread_t thread_init_async_input()
 void thread_test_keys()
 {
     unsigned char kb_key;
-    kbd_keys_t token;
+    kbd_keys_t token = 0;
     while(token != kb_esc)
     {
         kb_key = getch();

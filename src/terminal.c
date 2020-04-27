@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "terminal.h"
 
 #ifdef _WIN32

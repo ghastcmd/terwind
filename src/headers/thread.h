@@ -1,5 +1,4 @@
 #pragma once
-#include "pch.h"
 #include "thread_keys.h"
 
 #ifndef _WINDOWS_

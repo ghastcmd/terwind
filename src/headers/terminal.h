@@ -1,5 +1,4 @@
 #pragma once
-#include "pch.h"
 
 void terminal_setup();
 

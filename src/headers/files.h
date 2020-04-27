@@ -1,5 +1,4 @@
 #pragma once
-#include "pch.h"
 
 #ifdef _WIN32
 typedef HANDLE files_dir_t;

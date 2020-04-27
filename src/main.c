@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "terminal.h"
 #include "terwind.h"
 #include "logg.h"
