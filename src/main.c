@@ -1,9 +1,6 @@
-#include "pch.h"
 #include "terminal.h"
-#include "macros.h"
 #include "terwind.h"
 #include "logg.h"
-#include "thread.h"
 
 void main_exit(int signo);
 
@@ -27,7 +24,7 @@ int main()
 
 void main_exit(int signo)
 {
-    if (signo == SIGINT)
+    if (signo)
     {
         logg_close();
         terwind_fill_canvas(' ');

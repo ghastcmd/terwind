@@ -1,5 +1,6 @@
 bin/
 *.gch
 *.dat
+*.bak
 .vscode/*
 samples.c
