@@ -17,19 +17,23 @@ pch = $(include)/pch.h
 # target
 target = $(obj)/bin
 
-# optimize flags
-opt=
+# option flags
+opt:=
 
 # additional flags
 flags = -Wall -Wextra -Werror
 
-# full blown include paths
-inc = $(addprefix $(mk_inc),$(include))
-
+# library links flags
 ldflags = 
-ifneq ($(OS), Windows_NT)
+# windows specific libraries
+ifeq ($(OS), Windows_NT)
+	ldflags+=
+else
 	ldflags+=-lpthread
 endif
+
+# full blown include paths
+inc = $(addprefix $(mk_inc),$(include))
 
 source = $(foreach var,$(src),$(wildcard $(var)/*.c))
 object = $(patsubst %,$(obj)/%, $(notdir $(source:.c=.o)))
@@ -50,26 +54,32 @@ build: $(pch:.h=.h.gch) $(obj) $(target)
 bin:
 	mkdir bin
 
-.PHONY: optimize
-optimize:
-	$(eval opt+=-O3)
+config:=
+ifndef config
+	config=debug
+endif
 
-.PHONY: release
-release: optimize
-	$(eval opt+=-DRELEASE)
-
-.PHONY: logg
-logg:
-	$(eval opt+=-DLOGG)
-
-.PHONY: ter_debug
-ter_debug:
-	$(eval opt+=-DTER_DEBUG)
+# defining the configurations
+# runs the application without graphics
+ifeq ($(config),nographics)
+	opt=-DTER_DEBUG -DLOGG
+# only enables logg
+else ifeq ($(config),debug)
+	opt=-DLOGG
+# doesn't logg and enables release define
+else ifeq ($(config),release)
+	opt=-DRELEASE
+# release define and optimization
+else ifeq ($(config),dist)
+	opt=-DRELEASE -O3
+else
+	$(error invalid configuration)
+endif
 
 .PHONY: clean
 clean:
-	rm -f $(obj)/bin.exe
-	rm -f $(obj)/bin
+	rm -f $(target).exe
+	rm -f $(target)
 
 .PHONY: cleans
 cleans:
@@ -79,20 +89,20 @@ cleans:
 verbose:
 	$(eval flags+=-H)
 
-.PHONY: tst
-tst:
-	@echo src: $(src)
-	@echo obj: $(obj)
+.PHONY: vars
+vars:
+	@echo src:     $(src)
+	@echo obj:     $(obj)
 	@echo sources: $(source)
 	@echo objects: $(object)
-	@echo include: $(inc)
+	@echo include: $(include)
 	@echo targets: $(target)
 	@echo flags:   $(flags)
 	@echo opt:     $(opt)
 
 .PHONY: run
 run: build
-	@$(obj)/bin
+	@$(target)
 
 .PHONY: dump
 dump: build
@@ -100,10 +110,4 @@ dump: build
 
 .PHONY: valgrind
 valgrind: build
-	valgrind --leak-check=full ./bin/bin
-
-.PHONY: help
-help:
-	@echo run dump tst verbose
-	@echo clean cleans logg
-	@echo release optimize bin build
+	valgrind --leak-check=full $(target)
