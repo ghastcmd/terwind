@@ -19,10 +19,12 @@ void terwind_game_loop(const int fps_cap)
     thread_t async_thread = thread_init_async_input();
 
     register uint32_t starting_tick, ending_tick;
+    // struct timespec time_start = { 0 }, time_ending = { 0 }; 
     float delta_time;
     while(!vars.stop)
     {
         starting_tick = terwind_get_ticks();
+
         kbd_keys_t key = thread_get_async_input();
 
         if (key == kb_ctrl_c) break;

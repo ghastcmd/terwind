@@ -91,5 +91,12 @@ uint32_t terwind_get_ticks()
     logg_terminal("tick: %li ret: %"PRIu64"\n", tick, al);
     return al;
 #endif
-    return (uint32_t)1000000*((float)clock() / CLOCKS_PER_SEC);
+    struct timespec tick = { 0 };
+#ifdef CLOCK_MONOTONIC
+    clock_gettime(CLOCK_MONOTONIC, &tick);
+#else
+    timespec_get(&tick, TIME_UTC);
+#endif
+    return (uint32_t)tick.tv_nsec / 1000;
+    // return (uint32_t)1000000*((float)clock() / CLOCKS_PER_SEC);
 }
