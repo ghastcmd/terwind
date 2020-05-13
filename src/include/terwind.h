@@ -24,3 +24,6 @@ void terwind_put_pixel(uint32_t x, uint32_t y, char key);
 uint32_t terwind_get_ticks();
 
 void terwind_game_loop(const int fps_cap);
+void terwind_sleep_difftime(struct timespec *tvar1, struct timespec *tvar2, int frame_lock);
+void terwind_gettime(struct timespec *tp);
+void terwind_get_deltatime(float *dt, struct timespec *tp1, struct timespec *tp2);

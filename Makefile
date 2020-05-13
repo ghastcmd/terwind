@@ -2,7 +2,7 @@
 src = src
 obj = bin
 # include folders
-include = src/headers
+include = src/include src/pch src
 
 # cli compiler
 CC = gcc
@@ -12,7 +12,7 @@ mk_inc = -I
 mk_out = -o
 
 # pre-compiled header
-pch = $(include)/pch.h
+pch = pch/pch.h
 
 # target
 target = $(obj)/bin
@@ -99,6 +99,7 @@ vars:
 	@echo targets: $(target)
 	@echo flags:   $(flags)
 	@echo opt:     $(opt)
+	@echo config:  $(config)
 
 .PHONY: run
 run: build

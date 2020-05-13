@@ -60,10 +60,7 @@ void terwind_set_buffer(TerminalCanvas_t* wnd)
 void terwind_fill_canvas(const char key)
 {
     int max = wnd_buffer->dim.height * wnd_buffer->dim.width;
-    for (int i = 0; i < max; i++)
-    {
-        wnd_buffer->canvas_grid[i] = key;
-    }
+    memset(wnd_buffer->canvas_grid, key, max);
 }
 
 #ifndef TER_DEBUG
@@ -99,4 +96,34 @@ uint32_t terwind_get_ticks()
 #endif
     return (uint32_t)tick.tv_nsec / 1000;
     // return (uint32_t)1000000*((float)clock() / CLOCKS_PER_SEC);
+}
+
+void terwind_gettime(struct timespec *tp)
+{
+#ifdef CLOCK_MONOTONIC
+    clock_gettime(CLOCK_MONOTONIC, tp);
+#else
+    timespec_get(tp, TIME_UTC);
+#endif
+    tp->tv_sec = 0;
+}
+
+void terwind_sleep_difftime(struct timespec *tvar1, struct timespec *tvar2, int frame_lock)
+{
+    tvar2->tv_nsec -= tvar1->tv_nsec;
+    if (tvar2->tv_nsec > 0 && frame_lock > tvar2->tv_nsec)
+    {
+        tvar2->tv_nsec = frame_lock - tvar2->tv_nsec;
+        nanosleep(tvar2, tvar1);
+    }
+}
+
+void terwind_get_deltatime(float *dt, struct timespec *tp1, struct timespec *tp2)
+{
+    *dt = (float)(tp2->tv_nsec) / 1000000000.0f;
+    (void)*tp1;
+    if (*dt < 0)
+    {
+        *dt += 1;
+    }
 }

@@ -11,19 +11,18 @@ extern TerminalCanvas_t* wnd_buffer;
 void terwind_game_loop(const int fps_cap)
 {
     const uint32_t fps_tick = 1000000 / fps_cap;
-    struct timespec tim, tim2;
 
     GameVariables_t vars = { 0 };
     vars.i = 1;
 
     thread_t async_thread = thread_init_async_input();
 
-    register uint32_t starting_tick, ending_tick;
-    // struct timespec time_start = { 0 }, time_ending = { 0 }; 
+    struct timespec time_start = { 0 }, time_ending = { 0 }; 
     float delta_time;
     while(!vars.stop)
     {
-        starting_tick = terwind_get_ticks();
+        terwind_get_deltatime(&delta_time, &time_start, &time_ending);
+        terwind_gettime(&time_start);
 
         kbd_keys_t key = thread_get_async_input();
 
@@ -31,20 +30,13 @@ void terwind_game_loop(const int fps_cap)
 
         terwind_fill_canvas(' ');
 
-        delta_time = (float)(fps_tick - (starting_tick - terwind_get_ticks())) / 1000000;
         terwind_update_func(&vars, key, delta_time);
         terwind_draw_func(&vars);
 
         terwind_draw_canvas();
 
-        ending_tick = terwind_get_ticks();
-        if (fps_tick > ending_tick - starting_tick)
-        {
-            tim.tv_sec = 0;
-            tim.tv_nsec = (fps_tick - (ending_tick - starting_tick)) * 1000;
-            logg_status("fps_tick: %10"PRIu64" starting: %10"PRIu64" ending: %10"PRIu64" delay: %8li\n", fps_tick, starting_tick, ending_tick, tim.tv_nsec);
-            nanosleep(&tim, &tim2);
-        }
+        terwind_gettime(&time_ending);
+        terwind_sleep_difftime(&time_start, &time_ending, fps_tick);
     }
 
     thread_terminate(async_thread);
