@@ -4,39 +4,34 @@
 
 TerDim_t terwind_get_dimensions()
 {
+    TerDim_t dims;
 #ifdef _WIN32
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
     
-    return (TerDim_t)
-    {
-        .width = csbi.srWindow.Right - csbi.srWindow.Left + 1,
-        .height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1,
-    };
+    dims.width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    dims.height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
 
 #else
     struct winsize window;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &window);
 
-    return (TerDim_t)
-    {
-        .width = window.ws_col,
-        .height = window.ws_row,
-    };
+    dims.width = window.ws_col;
+    dims.height = window.ws_row;
 
 #endif
+    return dims;
 }
 
 TerminalCanvas_t terwind_create_buffer(TerminalDimensions_t dims)
 {
+    TerminalCanvas_t canvas;
     int max = dims.width * dims.height;
     char* grid = (char*)calloc(max + 1, sizeof(char));
 
-    return (TerminalCanvas_t)
-    {
-        .dim = dims,
-        .canvas_grid = grid,
-    };
+    canvas.dim = dims;
+    canvas.canvas_grid = grid;
+    return canvas;
 }
 
 TerminalCanvas_t terwind_get_canvas()
@@ -80,50 +75,42 @@ void terwind_put_pixel(uint32_t x, uint32_t y, char key)
     wnd_buffer->canvas_grid[pos] = key;
 }
 
-uint32_t terwind_get_ticks()
-{
-#ifdef TER_DEBUG
-    clock_t tick = clock();
-    uint64_t al = (uint64_t)1000000*((float)tick / CLOCKS_PER_SEC);
-    logg_terminal("tick: %li ret: %"PRIu64"\n", tick, al);
-    return al;
+#ifndef CLOCK_MONOTONIC
+#define CLOCK_MONOTONIC 0x1
 #endif
-    struct timespec tick = { 0 };
-#ifdef CLOCK_MONOTONIC
-    clock_gettime(CLOCK_MONOTONIC, &tick);
-#else
-    timespec_get(&tick, TIME_UTC);
-#endif
-    return (uint32_t)tick.tv_nsec / 1000;
-    // return (uint32_t)1000000*((float)clock() / CLOCKS_PER_SEC);
-}
 
-void terwind_gettime(struct timespec *tp)
+void terwind_gettime(stime_t *tp)
 {
 #ifdef CLOCK_MONOTONIC
-    clock_gettime(CLOCK_MONOTONIC, tp);
+    clock_gettime(CLOCK_MONOTONIC, (struct timespec*)tp);
 #else
-    timespec_get(tp, TIME_UTC);
+    timespec_get((struct timespec*)tp, TIME_UTC);
 #endif
-    tp->tv_sec = 0;
+    tp->seconds = 0;
 }
 
-void terwind_sleep_difftime(struct timespec *tvar1, struct timespec *tvar2, int frame_lock)
+static inline void terwind_nanosleep(stime_t *tp1, stime_t *tp2)
 {
-    tvar2->tv_nsec -= tvar1->tv_nsec;
-    if (tvar2->tv_nsec > 0 && frame_lock > tvar2->tv_nsec)
+    nanosleep((struct timespec*)tp1, (struct timespec*)tp2);
+}
+
+void terwind_sleep_difftime(stime_t *tvar1, stime_t *tvar2, int fpscap)
+{
+    tvar2->nanosec -= tvar1->nanosec;
+    if (tvar2->nanosec > 0 && fpscap > tvar2->nanosec)
     {
-        tvar2->tv_nsec = frame_lock - tvar2->tv_nsec;
-        nanosleep(tvar2, tvar1);
+        tvar2->nanosec = fpscap - tvar2->nanosec;
+        terwind_nanosleep(tvar2, tvar1);
     }
 }
 
-void terwind_get_deltatime(float *dt, struct timespec *tp1, struct timespec *tp2)
+static float last = 0;
+float terwind_get_deltatime()
 {
-    *dt = (float)(tp2->tv_nsec) / 1000000000.0f;
-    (void)*tp1;
-    if (*dt < 0)
-    {
-        *dt += 1;
-    }
+    const float old = last;
+    stime_t tp;
+    terwind_gettime(&tp);
+    last = ((float)tp.nanosec / 1000000000.0f);
+    float ret = last - old;
+    return ret < 0 ? ret + 1 : ret;
 }

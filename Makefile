@@ -76,13 +76,13 @@ else
 	$(error invalid configuration)
 endif
 
+# .PHONY: clean
+# clean:
+# 	rm -f $(target).exe
+# 	rm -f $(target)
+
 .PHONY: clean
 clean:
-	rm -f $(target).exe
-	rm -f $(target)
-
-.PHONY: cleans
-cleans:
 	rm -f $(obj)/*
 
 .PHONY: verbose

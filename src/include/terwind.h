@@ -1,6 +1,20 @@
 #pragma once
 #include "structs.h"
 
+typedef struct time_struct
+{
+    union
+    {
+        int64_t tv_sec;
+        int64_t seconds;
+    };
+    union
+    {
+        int64_t tv_nsec;
+        int64_t nanosec;
+    };
+} stime_t;
+
 TerDim_t terwind_get_dimensions();
 
 TerminalCanvas_t terwind_create_buffer(TerminalDimensions_t dims);
@@ -21,9 +35,8 @@ void terwind_draw_canvas();
 
 void terwind_put_pixel(uint32_t x, uint32_t y, char key);
 
-uint32_t terwind_get_ticks();
-
 void terwind_game_loop(const int fps_cap);
-void terwind_sleep_difftime(struct timespec *tvar1, struct timespec *tvar2, int frame_lock);
-void terwind_gettime(struct timespec *tp);
-void terwind_get_deltatime(float *dt, struct timespec *tp1, struct timespec *tp2);
+void terwind_sleep_difftime(stime_t *tvar1, stime_t *tvar2, int fpscap);
+void terwind_gettime(stime_t *tp);
+
+float terwind_get_deltatime();

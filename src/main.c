@@ -5,7 +5,7 @@
 
 void main_exit(int signo);
 
-int main()
+int main(int argc, char *argv[])
 {
     signal(SIGINT, main_exit);
     terminal_setup();
@@ -15,8 +15,12 @@ int main()
     terwind_set_buffer(&wnd);
 
 #ifdef KEY_TEST
+    extern void thread_test_keys();
     thread_test_keys();
 #else
+    if (argc != 1)
+    terwind_game_loop(atoi(argv[1]));
+    else
     terwind_game_loop(60);
 #endif
 
