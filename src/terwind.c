@@ -84,6 +84,7 @@ void terwind_gettime(stime_t *tp)
     gettimeofday(&tv, NULL);
     tp->nanosec = tv.tv_usec / 1000;
 #endif
+    logg_info("miliseconds %li\n", tp->nanosec);
     tp->seconds = 0;
 }
 
@@ -94,10 +95,12 @@ static inline void terwind_nanosleep(stime_t *tp1, stime_t *tp2)
 
 void terwind_sleep_difftime(stime_t *tvar1, stime_t *tvar2, uint64_t fpscap)
 {
+    logg_info("tvar2: %lu, tvar1: %lu\n", tvar2->nanosec, tvar1->nanosec);
     tvar2->nanosec -= tvar1->nanosec;
-    if (tvar2->nanosec > 0 && fpscap > tvar2->nanosec)
+    logg_info("fps_cap: %lu, dftime dt: %lu\n", fpscap, tvar2->nanosec);
+    if (fpscap > tvar2->nanosec)
     {
-        tvar2->nanosec = fpscap - tvar2->nanosec;
+        tvar2->nanosec = (fpscap - tvar2->nanosec) * 1000000;
         logg_info("sec: %li, sleep: %li\n", tvar2->seconds, tvar2->nanosec);
         logg_info("sec: %li, sleep: %li\n", tvar1->seconds, tvar1->nanosec);
         terwind_nanosleep(tvar2, tvar1);
@@ -112,7 +115,6 @@ float terwind_get_deltatime()
     terwind_gettime(&tp);
     last = ((float)tp.nanosec / 1000.0f);
     float ret = last - old;
-    logg_info("last: %f, ret: %f\n", last, ret);
-    return ret;
+    logg_info("last: %f, ret: %f, old: %f\n", last, ret, old);
     return ret < 0 ? ret + 1 : ret;
 }

@@ -16,12 +16,15 @@ void terwind_game_loop(const int fps_cap)
 
     thread_t async_thread = thread_init_async_input();
 
-    const uint32_t fps_tick = 1000000000 / fps_cap;
+    const uint32_t fps_tick = 1000 / fps_cap;
     stime_t time_start = { 0 }, time_ending = { 0 };
     float dt = 0;
+    int idx = 0;
     while(!vars.stop)
     {
         if (fps_cap != 0) terwind_gettime(&time_start);
+
+        logg_info("\nframe %i\n", idx++);
 
         kbd_keys_t key = thread_get_async_input();
 
