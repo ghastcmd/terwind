@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "terwind.h"
-#include "logg.h"
+#include "logg/logg.h"
 #include "thread.h"
 
 void terwind_update_func(GameVars_t* vars, kbd_keys_t key, float delta_time);
@@ -53,8 +53,8 @@ void terwind_update_func(GameVars_t* vars, kbd_keys_t key, float dt)
         vars->j = !(vars->j);
     }
 
-    vars->x_pos += (float)(vars->i * 4) * dt;
-    vars->y_pos += (float)(vars->j * 2) * dt;
+    vars->x_pos += (float)(vars->i * 1) * dt;
+    vars->y_pos += (float)(vars->j * 0.5f) * dt;
 
     logg_info("x_pos: %f\ty_pos: %f\n", vars->x_pos, vars->y_pos);
     logg_info("delta_time: %f\ti: %i\tj: %i\n", dt, vars->i, vars->j);

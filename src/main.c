@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "terminal.h"
 #include "terwind.h"
-#include "logg.h"
+#include "logg/logg.h"
 
 void main_exit(int signo);
 

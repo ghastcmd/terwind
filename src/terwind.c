@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "terwind.h"
-#include "logg.h"
+#include "logg/logg.h"
 
 TerDim_t terwind_get_dimensions()
 {
@@ -75,16 +75,14 @@ void terwind_put_pixel(uint32_t x, uint32_t y, char key)
     wnd_buffer->canvas_grid[pos] = key;
 }
 
-#ifndef CLOCK_MONOTONIC
-#define CLOCK_MONOTONIC 0x1
-#endif
-
 void terwind_gettime(stime_t *tp)
 {
-#ifdef CLOCK_MONOTONIC
-    clock_gettime(CLOCK_MONOTONIC, (struct timespec*)tp);
+#ifdef _WIN32
+    tp->nanosec = GetTickCount();
 #else
-    timespec_get((struct timespec*)tp, TIME_UTC);
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    tp->nanosec = tv.tv_usec / 1000;
 #endif
     tp->seconds = 0;
 }
@@ -94,12 +92,14 @@ static inline void terwind_nanosleep(stime_t *tp1, stime_t *tp2)
     nanosleep((struct timespec*)tp1, (struct timespec*)tp2);
 }
 
-void terwind_sleep_difftime(stime_t *tvar1, stime_t *tvar2, int fpscap)
+void terwind_sleep_difftime(stime_t *tvar1, stime_t *tvar2, uint64_t fpscap)
 {
     tvar2->nanosec -= tvar1->nanosec;
     if (tvar2->nanosec > 0 && fpscap > tvar2->nanosec)
     {
         tvar2->nanosec = fpscap - tvar2->nanosec;
+        logg_info("sec: %li, sleep: %li\n", tvar2->seconds, tvar2->nanosec);
+        logg_info("sec: %li, sleep: %li\n", tvar1->seconds, tvar1->nanosec);
         terwind_nanosleep(tvar2, tvar1);
     }
 }
@@ -110,7 +110,9 @@ float terwind_get_deltatime()
     const float old = last;
     stime_t tp;
     terwind_gettime(&tp);
-    last = ((float)tp.nanosec / 1000000000.0f);
+    last = ((float)tp.nanosec / 1000.0f);
     float ret = last - old;
+    logg_info("last: %f, ret: %f\n", last, ret);
+    return ret;
     return ret < 0 ? ret + 1 : ret;
 }

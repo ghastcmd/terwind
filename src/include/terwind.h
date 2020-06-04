@@ -5,13 +5,13 @@ typedef struct time_struct
 {
     union
     {
-        int64_t tv_sec;
-        int64_t seconds;
+        uint64_t tv_sec;
+        uint64_t seconds;
     };
     union
     {
-        int64_t tv_nsec;
-        int64_t nanosec;
+        uint64_t tv_nsec;
+        uint64_t nanosec;
     };
 } stime_t;
 
@@ -36,7 +36,7 @@ void terwind_draw_canvas();
 void terwind_put_pixel(uint32_t x, uint32_t y, char key);
 
 void terwind_game_loop(const int fps_cap);
-void terwind_sleep_difftime(stime_t *tvar1, stime_t *tvar2, int fpscap);
+void terwind_sleep_difftime(stime_t *tvar1, stime_t *tvar2, uint64_t fpscap);
 void terwind_gettime(stime_t *tp);
 
 float terwind_get_deltatime();

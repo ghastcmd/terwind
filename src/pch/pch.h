@@ -26,6 +26,8 @@
 #include <termios.h>
 #include <dirent.h>
 
+#include <sys/time.h>
+
 #define INIT
 
 #endif

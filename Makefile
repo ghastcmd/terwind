@@ -1,8 +1,9 @@
 # master folders
-src = src
+src_d = src
 obj = bin
 # include folders
 include = src/include src/pch src
+src = $(filter-out *.c $(wildcard $(src_d)/*.c) $(include),$(wildcard $(src_d)/*)) $(src_d)
 
 # cli compiler
 CC = gcc
