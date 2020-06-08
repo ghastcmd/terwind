@@ -8,6 +8,7 @@ void main_exit(int signo);
 int main(int argc, char *argv[])
 {
     signal(SIGINT, main_exit);
+    signal(SIGABRT, main_exit);
     terminal_setup();
     logg_setup(2, "fps.dat", "misc.dat");
 
@@ -29,13 +30,17 @@ int main(int argc, char *argv[])
 
 void main_exit(int signo)
 {
-    if (signo)
+    logg_close();
+    terwind_fill_canvas(' ');
+    terwind_draw_canvas();
+    terminal_reset();
+    terwind_free();
+
+    switch (signo)
     {
-        logg_close();
-        terwind_fill_canvas(' ');
-        terwind_draw_canvas();
-        terminal_reset();
-        terwind_free();
+    case SIGINT:
         exit(0);
+    case SIGABRT:
+        exit(3);
     }
 }
