@@ -5,8 +5,12 @@
 
 void main_exit(int signo);
 
+#define KEY_TEST
+#undef KEY_TEST
+
 int main(int argc, char *argv[])
 {
+    (void)argv, (void)argc;
     signal(SIGINT, main_exit);
     signal(SIGABRT, main_exit);
     terminal_setup();
@@ -19,13 +23,19 @@ int main(int argc, char *argv[])
     extern void thread_test_keys();
     thread_test_keys();
 #else
-    if (argc != 1)
-    terwind_game_loop(atoi(argv[1]));
+    if (argc > 1)
+    {
+        register int fps_arg = atoi(argv[1]);
+        terwind_game_loop(fps_arg);
+    }
     else
-    terwind_game_loop(60);
+    {
+        terwind_game_loop(60);
+    }
 #endif
 
     main_exit(SIGINT);
+    return 0;
 }
 
 void main_exit(int signo)

@@ -90,7 +90,9 @@ void terwind_gettime(stime_t *tp)
 
 static inline void terwind_nanosleep(stime_t *tp1, stime_t *tp2)
 {
-    nanosleep((struct timespec*)tp1, (struct timespec*)tp2);
+    (void)tp1, (void)tp2;
+    // ! TODO : Find a replacement for nanosleep on windows
+    // nanosleep((struct timespec*)tp1, (struct timespec*)tp2);
 }
 
 void terwind_sleep_difftime(stime_t *tvar1, stime_t *tvar2, uint64_t fpscap)
