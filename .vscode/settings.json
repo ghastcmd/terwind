@@ -15,5 +15,6 @@
         "ioctl.h": "c",
         "ioctls.h": "c",
         "files.h": "c"
-    }
+    },
+    "C_Cpp.intelliSenseEngineFallback": "Disabled"
 }

@@ -2,8 +2,8 @@
 src_d = src
 obj = bin
 # include folders
-include = src/include src/pch src
-src = $(filter-out *.c $(wildcard $(src_d)/*.c) $(include),$(wildcard $(src_d)/*)) $(src_d)
+include = src/include src/pch
+src = $(filter-out $(include), $(patsubst %/.,%,$(wildcard $(src_d)/*/.))) $(src_d)
 
 # cli compiler
 CC = gcc
@@ -17,9 +17,12 @@ pch = pch/pch.h
 
 # target
 target = $(obj)/bin
+ifeq ($(OS),Windows_NT)
+	target:=$(target).exe
+endif
 
 # option flags
-opt:=
+opt =
 
 # additional flags
 flags = -Wall -Wextra -Werror
@@ -37,23 +40,27 @@ endif
 inc = $(addprefix $(mk_inc),$(include))
 
 source = $(foreach var,$(src),$(wildcard $(var)/*.c))
-object = $(patsubst %,$(obj)/%, $(notdir $(source:.c=.o)))
+object = $(patsubst %,$(obj)/%.o, $(basename $(notdir $(source))))
+
+$(target): $(object)
+	@echo Compiling target $@
+	@$(CC) $^ $(mk_out) $@ $(inc) $(opt) $(flags) $(ldflags)
 
 VPATH = $(src)
 $(obj)/%.o: %.c
-	$(CC) $(mk_obj) $< $(mk_out) $@ $(inc) $(opt) $(flags) $(ldflags)
+	@echo Compiling $< to $@
+	@$(CC) $(mk_obj) $< $(mk_out) $@ $(inc) $(opt) $(flags)
 
-$(target): $(object)
-	$(CC) $^ $(mk_out) $@ $(inc) $(opt) $(flags) $(ldflags)
-
-$(pch:.h=.h.gch): $(pch)
-	$(CC) $(mk_obj) $<
+gch = $(pch:.h=.h.gch)
+$(gch): $(pch)
+	@echo Compiling precompiled header $@
+	@$(CC) $(mk_obj) $<
 
 .PHONY: build
-build: $(pch:.h=.h.gch) $(obj) $(target)
+build: $(gch) $(obj) $(target)
 
-bin:
-	mkdir bin
+$(obj):
+	mkdir $(obj)
 
 config:=
 ifndef config
@@ -77,14 +84,10 @@ else
 	$(error invalid configuration)
 endif
 
-# .PHONY: clean
-# clean:
-# 	rm -f $(target).exe
-# 	rm -f $(target)
-
 .PHONY: clean
 clean:
-	rm -f $(obj)/*
+	@echo Cleaning ...
+	@rm -f $(obj)/* $(target)
 
 .PHONY: verbose
 verbose:
