@@ -23,6 +23,7 @@ endif
 
 # option flags
 opt =
+thread_count = 12
 
 # additional flags
 flags = -Wall -Wextra -Werror
@@ -56,8 +57,11 @@ $(gch): $(pch)
 	@echo Compiling precompiled header $@
 	@$(CC) $(mk_obj) $<
 
-.PHONY: build
-build: $(gch) $(obj) $(target)
+.PHONY: build compile
+build:
+	@$(MAKE) -s compile -j $(thread_count)
+
+compile: $(gch) $(obj) $(target)
 
 $(obj):
 	mkdir $(obj)
@@ -104,6 +108,7 @@ vars:
 	@echo flags:   $(flags)
 	@echo opt:     $(opt)
 	@echo config:  $(config)
+	@echo t_count: $(thread_count)
 
 .PHONY: run
 run: build
