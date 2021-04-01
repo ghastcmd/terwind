@@ -44,11 +44,6 @@ inc = $(addprefix $(mk_inc),$(include))
 source = $(foreach var,$(src),$(wildcard $(var)/*.c))
 object = $(patsubst %,$(obj)/%.o, $(basename $(notdir $(source))))
 
-obj_folders :=
-mklib: $(gch) $(obj) $(addprefix $(obj)/,$(addsuffix .o,$(obj_folders)))
-	$(SS)echo Compiling static library
-	$(SS)$(CC) -shared $^ $(mk_out) ./lib.so $(inc) $(opt) $(flags) $(ldflags)
-
 $(target): $(object)
 	$(SS)echo Compiling target $@
 	$(SS)$(CC) $^ $(mk_out) $@ $(inc) $(opt) $(flags) $(ldflags)
@@ -62,6 +57,12 @@ gch = $(pch:.h=.h.gch)
 $(gch): $(pch)
 	$(SS)echo Compiling precompiled header $@
 	$(SS)$(CC) $(mk_obj) $<
+
+obj_folders :=
+mklib: $(gch) $(obj) $(addprefix $(obj)/,$(addsuffix .o,$(obj_folders)))
+	$(SS)echo Compiling static library
+	$(SS)$(CC) -shared $(filter-out $(gch) $(obj),$^) \
+	$(mk_out) ./lib.so $(inc) $(opt) $(flags) $(ldflags)
 
 .PHONY: build
 build: $(gch) $(obj) $(target)
