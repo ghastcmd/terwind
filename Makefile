@@ -12,6 +12,8 @@ mk_obj = -c
 mk_inc = -I
 mk_out = -o
 
+SS = @
+
 # pre-compiled header
 pch = pch/pch.h
 
@@ -42,19 +44,24 @@ inc = $(addprefix $(mk_inc),$(include))
 source = $(foreach var,$(src),$(wildcard $(var)/*.c))
 object = $(patsubst %,$(obj)/%.o, $(basename $(notdir $(source))))
 
+obj_folders :=
+mklib: $(gch) $(obj) $(addprefix $(obj)/,$(addsuffix .o,$(obj_folders)))
+	$(SS)echo Compiling static library
+	$(SS)$(CC) -shared $^ $(mk_out) ./lib.so $(inc) $(opt) $(flags) $(ldflags)
+
 $(target): $(object)
-	@echo Compiling target $@
-	@$(CC) $^ $(mk_out) $@ $(inc) $(opt) $(flags) $(ldflags)
+	$(SS)echo Compiling target $@
+	$(SS)$(CC) $^ $(mk_out) $@ $(inc) $(opt) $(flags) $(ldflags)
 
 VPATH = $(src)
 $(obj)/%.o: %.c
-	@echo Compiling $< to $@
-	@$(CC) $(mk_obj) $< $(mk_out) $@ $(inc) $(opt) $(flags)
+	$(SS)echo Compiling $< to $@
+	$(SS)$(CC) $(mk_obj) $< $(mk_out) $@ $(inc) $(opt) $(flags)
 
 gch = $(pch:.h=.h.gch)
 $(gch): $(pch)
-	@echo Compiling precompiled header $@
-	@$(CC) $(mk_obj) $<
+	$(SS)echo Compiling precompiled header $@
+	$(SS)$(CC) $(mk_obj) $<
 
 .PHONY: build
 build: $(gch) $(obj) $(target)
@@ -86,8 +93,8 @@ endif
 
 .PHONY: clean
 clean:
-	@echo Cleaning ...
-	@rm -f $(obj)/* $(target)
+	$(SS)echo Cleaning ...
+	$(SS)rm -f $(obj)/* $(target)
 
 .PHONY: verbose
 verbose:
@@ -95,19 +102,19 @@ verbose:
 
 .PHONY: vars
 vars:
-	@echo src:     $(src)
-	@echo obj:     $(obj)
-	@echo sources: $(source)
-	@echo objects: $(object)
-	@echo include: $(include)
-	@echo targets: $(target)
-	@echo flags:   $(flags)
-	@echo opt:     $(opt)
-	@echo config:  $(config)
+	$(SS)echo src:     $(src)
+	$(SS)echo obj:     $(obj)
+	$(SS)echo sources: $(source)
+	$(SS)echo objects: $(object)
+	$(SS)echo include: $(include)
+	$(SS)echo targets: $(target)
+	$(SS)echo flags:   $(flags)
+	$(SS)echo opt:     $(opt)
+	$(SS)echo config:  $(config)
 
 .PHONY: run
 run: build
-	@$(target)
+	$(SS)$(target)
 
 .PHONY: dump
 dump: build
