@@ -58,11 +58,15 @@ $(gch): $(pch)
 	$(SS)echo Compiling precompiled header $@
 	$(SS)$(CC) $(mk_obj) $<
 
+help:
+	@echo $(gch)
+
 obj_folders :=
-mklib: $(gch) $(obj) $(addprefix $(obj)/,$(addsuffix .o,$(obj_folders)))
+mklib: $(gch) $(obj) mklib_o
+
+mklib_o: $(addprefix $(obj)/,$(addsuffix .o,$(obj_folders)))
 	$(SS)echo Compiling static library
-	$(SS)$(CC) -shared $(filter-out $(gch) $(obj),$^) \
-	$(mk_out) ./lib.so $(inc) $(opt) $(flags) $(ldflags)
+	$(SS)ld -r -o lib.a $^
 
 .PHONY: build
 build: $(gch) $(obj) $(target)
@@ -95,7 +99,7 @@ endif
 .PHONY: clean
 clean:
 	$(SS)echo Cleaning ...
-	$(SS)rm -f $(obj)/* $(target)
+	$(SS)rm -f $(obj)/* $(target) *.a
 
 .PHONY: verbose
 verbose:
