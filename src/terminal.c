@@ -1,6 +1,27 @@
 #include "pch.h"
 #include "terminal.h"
 
+tupledim_t terminal_get_dims()
+{
+    tupledim_t dims;
+#ifdef _WIN32
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+    
+    dims.width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    dims.height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+
+#else
+    struct winsize window;
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &window);
+
+    dims.width = window.ws_col;
+    dims.height = window.ws_row;
+
+#endif
+    return dims;
+}
+
 #ifdef _WIN32
 
 #ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
