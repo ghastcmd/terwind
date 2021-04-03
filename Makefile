@@ -99,7 +99,9 @@ endif
 .PHONY: clean
 clean:
 	$(SS)echo Cleaning ...
-	$(SS)rm -f $(obj)/* $(target) *.a
+	$(SS)rm -f $(obj)/*
+	$(SS)rm -f $(target)
+	$(SS)rm -f *.a
 
 .PHONY: verbose
 verbose:
