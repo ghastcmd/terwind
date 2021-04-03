@@ -22,6 +22,33 @@ tupledim_t terminal_get_dims()
     return dims;
 }
 
+void terminal_set_color(tcolor_t color)
+{
+    printf("\x1b[%im", color);
+}
+
+void terminal_set_bgcolor(tcolor_t color)
+{
+    terminal_set_color(color + 10);
+}
+
+void terminal_reset_color()
+{
+    printf("\033[0m");
+}
+
+void terminal_zeropos()
+{
+    printf("\x1b[0d");
+}
+
+void terminal_psleep(int psec)
+{
+    struct timespec time1 = { 0, 0 }, time2 = { 0, 0 };
+    time1.tv_nsec = psec * 1000;
+    nanosleep(&time1, &time2);
+}
+
 #ifdef _WIN32
 
 #ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
