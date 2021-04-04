@@ -92,11 +92,47 @@ void terminal_psleep(int psec)
     nanosleep(&time1, &time2);
 }
 
+void terminal_hide_cursor()
+{
+    printf("\e[?25l");
+}
+
+void terminal_show_cursor()
+{
+    printf("\e[?25h");
+}
+
 #ifdef _WIN32
 
 #ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
 #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
 #endif
+
+HANDLE terminal_get_console_handle()
+{
+    static HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+    return handle; 
+}
+
+void terminal_hidecursor()
+{
+    static const HANDLE console_handle = terminal_get_console_handle();
+    CONSOLE_CURSOR_INFO cursor_info;
+    GetConsoleCursorInfo(console_handle, &cursor_info);
+
+    cursor_info.bVisible = false;
+    SetConsoleCursorInfo(console_handle, &cursor_info);
+}
+
+void terminal_show_cursor()
+{
+    static const HANDLE console_handle = terminal_get_console_handle();
+    CONSOLE_CURSOR_INFO cursor_info;
+    GetConsoleCursorInfo(console_handle, &cursor_info);
+
+    cursor_info.bVisible = true;
+    SetConsoleCursorInfo(console_handle, &cursor_info);
+}
 
 void terminal_setup()
 {

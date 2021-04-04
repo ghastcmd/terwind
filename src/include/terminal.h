@@ -33,6 +33,9 @@ void terminal_clear_line();
 void terminal_zeropos();
 void terminal_psleep(int psec);
 
+void terminal_hide_cursor();
+void terminal_show_cursor();
+
 void terminal_setup();
 
 void terminal_reset();
