@@ -108,6 +108,28 @@ void terminal_show_cursor()
 #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
 #endif
 
+HANDLE _get_stdout_handle()
+{
+    static HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+    return handle;
+}
+
+void terminal_disable_inecho()
+{
+    HANDLE chandle = _get_stdout_handle();
+    DWORD mode;
+    GetConsoleMode(chandle, &mode);
+    SetConsoleMode(chandle, mode & ~(ENABLE_ECHO_INPUT));
+}
+
+void terminal_enable_inecho()
+{
+    HANDLE chandle = _get_stdout_handle();
+    DWORD mode;
+    GetConsoleMode(chandle, &mode);
+    SetConsoleMode(chandle, mode | ENABLE_ECHO_INPUT);
+}
+
 void terminal_setup()
 {
     DWORD out_mode = 0;
