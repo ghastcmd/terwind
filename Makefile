@@ -101,7 +101,7 @@ clean:
 	$(SS)echo Cleaning ...
 	$(SS)rm -f $(obj)/*
 	$(SS)rm -f $(target)
-	$(SS)rm -f *.a
+	$(SS)rm -f lib.a
 
 .PHONY: verbose
 verbose:
