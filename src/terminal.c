@@ -110,7 +110,10 @@ void terminal_show_cursor()
 
 HANDLE _get_stdout_handle()
 {
-    static HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+    static HANDLE handle = NULL;
+    if (!handle)
+        handle = GetStdHandle(STD_OUTPUT_HANDLE);
+
     return handle;
 }
 

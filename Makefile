@@ -102,6 +102,7 @@ clean:
 	$(SS)rm -f $(wildcard $(obj)/*)
 	$(SS)rm -f $(target)
 	$(SS)rm -f lib.a
+	$(SS)rm -f $(wildcard *.dat)
 
 .PHONY: verbose
 verbose:
