@@ -37,6 +37,49 @@ void terminal_reset_color()
     printf("\033[0m");
 }
 
+/**
+ esc[PL;PcH
+ esc[PnA - up
+ esc[PnB - down
+ esc[PnC - forward
+ esc[PnD - backward
+ esc[s - saves position
+ esc[u - restores position
+ esc[J - clears screen and moves cursor to end
+ esc[2J - clears screen and moves cursor do start
+ esc[K - clears the line from cursor positon to end
+ esc[2K - clears the entire line
+*/
+
+#define move_func(name, code) \
+void name(int count) \
+{ \
+    printf("\x1b[%i"#code, count); \
+}
+
+#define noval_func(name, code) \
+void name() \
+{ \
+    printf("\x1b["#code); \
+}
+
+move_func(terminal_move_up, A)
+move_func(terminal_move_down, B)
+move_func(terminal_move_forward, C)
+move_func(terminal_move_backward, D)
+
+noval_func(terminal_save_pos, s)
+noval_func(terminal_restore_pos, u)
+noval_func(terminal_clear_screen, J)
+noval_func(terminal_clear_screen_start, 2J)
+noval_func(terminal_clear_line_end, K)
+noval_func(terminal_clear_line, 2K)
+
+void terminal_set_pos(int line, int column)
+{
+    printf("\x1b[%i;%iH", line, column);
+}
+
 void terminal_zeropos()
 {
     printf("\x1b[0d");
