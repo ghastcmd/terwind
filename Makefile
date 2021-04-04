@@ -99,7 +99,7 @@ endif
 .PHONY: clean
 clean:
 	$(SS)echo Cleaning ...
-	$(SS)rm -f $(obj)/*
+	$(SS)rm -f $(wildcard $(obj)/*)
 	$(SS)rm -f $(target)
 	$(SS)rm -f lib.a
 
