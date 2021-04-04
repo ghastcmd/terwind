@@ -163,14 +163,14 @@ void terminal_disable_inecho()
     struct termios term;
     tcgetattr(STDIN_FILENO, &term);
 
-    tem.c_lfglag &= ~ECHO;
+    term.c_lflag &= ~ECHO;
 
     tcsetattr(STDIN_FILENO, TCSANOW, &term);
 }
 
 void terminal_enable_inecho()
 {
-    struct termiso term;
+    struct termios term;
     tcgetattr(STDIN_FILENO, &term);
 
     term.c_lflag |= ECHO;
