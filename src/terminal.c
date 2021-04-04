@@ -108,39 +108,13 @@ void terminal_show_cursor()
 #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
 #endif
 
-HANDLE terminal_get_console_handle()
-{
-    static HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
-    return handle; 
-}
-
-void terminal_hidecursor()
-{
-    static const HANDLE console_handle = terminal_get_console_handle();
-    CONSOLE_CURSOR_INFO cursor_info;
-    GetConsoleCursorInfo(console_handle, &cursor_info);
-
-    cursor_info.bVisible = false;
-    SetConsoleCursorInfo(console_handle, &cursor_info);
-}
-
-void terminal_show_cursor()
-{
-    static const HANDLE console_handle = terminal_get_console_handle();
-    CONSOLE_CURSOR_INFO cursor_info;
-    GetConsoleCursorInfo(console_handle, &cursor_info);
-
-    cursor_info.bVisible = true;
-    SetConsoleCursorInfo(console_handle, &cursor_info);
-}
-
 void terminal_setup()
 {
     DWORD out_mode = 0;
     HANDLE hd_stdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
     GetConsoleMode(hd_stdout, &out_mode);
-    
+
     out_mode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
 
     SetConsoleMode(hd_stdout, out_mode);
