@@ -88,10 +88,13 @@ else
 	$(error invalid configuration)
 endif
 
+
+
 .PHONY: clean
 clean:
 	@echo Cleaning ...
-	@rm -f $(obj)/* $(target)
+	-@powershell -c 'rm $(obj)/* -Force -Recurse -ErrorAction SilentlyContinue'
+	-@powershell -c 'rm $(target) -Force -Recurse -ErrorAction SilentlyContinue'
 
 .PHONY: verbose
 verbose:

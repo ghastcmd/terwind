@@ -2,6 +2,7 @@
 #include "terwind.h"
 #include "logg/logg.h"
 #include "thread.h"
+#include "render_letters.h"
 
 void terwind_update_func(GameVars_t* vars, kbd_keys_t key, float delta_time);
 void terwind_draw_func(const GameVars_t* vars);
@@ -75,5 +76,7 @@ void terwind_update_func(GameVars_t* vars, kbd_keys_t key, float dt)
 
 void terwind_draw_func(const GameVars_t* vars)
 {
-    terwind_put_pixel(vars->x_pos, vars->y_pos, 94);
+    terwind_put_pixel(vars->x_pos * 1.2, vars->y_pos+3, 94);
+
+    render_letters(vars->x_pos, 2, "this is the start", sizeof("this is the start"));
 }

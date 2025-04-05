@@ -41,6 +41,33 @@ void thread_terminate(thread_t thread)
     // TODO: Error handling
 }
 
+thread_mutex_t thread_create_mutex()
+{
+#ifdef _WIN32
+    return CreateMutexA(NULL, 0, NULL);
+#else
+    return PTHREAD_MUTEX_INITIALIZER;
+#endif
+}
+
+void thread_mutex_lock(thread_mutex_t mutex)
+{
+#ifdef _WIN32
+    WaitForSingleObject(mutex, INFINITE);
+#else
+    pthread_mutex_lock(mutex);
+#endif
+}
+
+void thread_mutex_unlock(thread_mutex_t mutex)
+{
+#ifdef _WIN32
+    ReleaseMutex(mutex);
+#else
+    pthread_mutex_unlock(mutex);
+#endif
+}
+
 static inline void emmit(unsigned char byte, kbd_keys_t* smt)
 {
     *smt = (*smt << 8) | byte;

@@ -75,6 +75,7 @@ void terwind_put_pixel(uint32_t x, uint32_t y, char key)
     wnd_buffer->canvas_grid[pos] = key;
 }
 
+// TODO: implement it using __rdtsc from intrinsics
 void terwind_gettime(stime_t *tp)
 {
 #ifdef _WIN32

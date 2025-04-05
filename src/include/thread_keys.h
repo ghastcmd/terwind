@@ -1,4 +1,5 @@
 #pragma once
+#define THREAD_ASYNC_KEYS
 
 typedef enum keyboard_keys
 {
