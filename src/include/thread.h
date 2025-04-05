@@ -1,14 +1,16 @@
 #pragma once
 #include "thread_keys.h"
 
-#ifndef _WINDOWS_
+#ifdef __linux__
 typedef pthread_t thread_t;
 typedef void*(*thread_sts_t)(void*);
 typedef void* thread_ret_t;
-#else
+typedef pthread_mutex_t thread_mutex_t;
+#elif _WIN32
 typedef HANDLE thread_t;
 typedef PTHREAD_START_ROUTINE thread_sts_t;
 typedef unsigned long int thread_ret_t;
+typedef HANDLE thread_mutex_t;
 #endif
 
 thread_t thread_create(thread_ret_t (*foo)(void*), void* param);
