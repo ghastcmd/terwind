@@ -12,6 +12,8 @@ mk_obj = -c
 mk_inc = -I
 mk_out = -o
 
+SS = @
+
 # pre-compiled header
 pch = pch/pch.h
 
@@ -44,18 +46,28 @@ source = $(foreach var,$(src),$(wildcard $(var)/*.c))
 object = $(patsubst %,$(obj)/%.o, $(basename $(notdir $(source))))
 
 $(target): $(object)
-	@echo Compiling target $@
-	@$(CC) $^ $(mk_out) $@ $(inc) $(opt) $(flags) $(ldflags)
+	$(SS)echo Compiling target $@
+	$(SS)$(CC) $^ $(mk_out) $@ $(inc) $(opt) $(flags) $(ldflags)
 
 VPATH = $(src)
 $(obj)/%.o: %.c
-	@echo Compiling $< to $@
-	@$(CC) $(mk_obj) $< $(mk_out) $@ $(inc) $(opt) $(flags)
+	$(SS)echo Compiling $< to $@
+	$(SS)$(CC) $(mk_obj) $< $(mk_out) $@ $(inc) $(opt) $(flags)
 
 gch = $(pch:.h=.h.gch)
 $(gch): $(pch)
-	@echo Compiling precompiled header $@
-	@$(CC) $(mk_obj) $<
+	$(SS)echo Compiling precompiled header $@
+	$(SS)$(CC) $(mk_obj) $<
+
+help:
+	@echo $(gch)
+
+obj_folders :=
+mklib: $(gch) $(obj) mklib_o
+
+mklib_o: $(addprefix $(obj)/,$(addsuffix .o,$(obj_folders)))
+	$(SS)echo Compiling static library
+	$(SS)ld -r -o lib.a $^
 
 .PHONY: build compile
 build:
@@ -92,9 +104,11 @@ endif
 
 .PHONY: clean
 clean:
-	@echo Cleaning ...
-	-@powershell -c 'rm $(obj)/* -Force -Recurse -ErrorAction SilentlyContinue'
-	-@powershell -c 'rm $(target) -Force -Recurse -ErrorAction SilentlyContinue'
+	$(SS)echo Cleaning ...
+	$(SS)rm -f $(wildcard $(obj)/*)
+	$(SS)rm -f $(target)
+	$(SS)rm -f lib.a
+	$(SS)rm -f $(wildcard *.dat)
 
 .PHONY: verbose
 verbose:
@@ -102,20 +116,19 @@ verbose:
 
 .PHONY: vars
 vars:
-	@echo src:     $(src)
-	@echo obj:     $(obj)
-	@echo sources: $(source)
-	@echo objects: $(object)
-	@echo include: $(include)
-	@echo targets: $(target)
-	@echo flags:   $(flags)
-	@echo opt:     $(opt)
-	@echo config:  $(config)
-	@echo t_count: $(thread_count)
+	$(SS)echo src:     $(src)
+	$(SS)echo obj:     $(obj)
+	$(SS)echo sources: $(source)
+	$(SS)echo objects: $(object)
+	$(SS)echo include: $(include)
+	$(SS)echo targets: $(target)
+	$(SS)echo flags:   $(flags)
+	$(SS)echo opt:     $(opt)
+	$(SS)echo config:  $(config)
 
 .PHONY: run
 run: build
-	@$(target)
+	$(SS)$(target)
 
 .PHONY: dump
 dump: build

@@ -8,6 +8,8 @@ void main_exit(int signo);
 #define KEY_TEST
 #undef KEY_TEST
 
+#ifndef __library__
+
 int main(int argc, char *argv[])
 {
     (void)argv, (void)argc;
@@ -54,3 +56,5 @@ void main_exit(int signo)
         exit(3);
     }
 }
+
+#endif
