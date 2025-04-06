@@ -80,7 +80,10 @@ void terwind_draw_func(const GameVars_t* vars)
 
     render_letters(vars->x_pos, 2, "this is the start", sizeof("this is the start"));
 
-    render_line(vars->x_pos, 10, vars->x_pos + 10, 20);
+    render_line(2, 1, 10, 10);
+
+    terwind_put_pixel(2, 1, '*');
+    terwind_put_pixel(10, 10, '*');
 
     terwind_put_pixel(vars->x_pos + 10, 13, '*');
 }
