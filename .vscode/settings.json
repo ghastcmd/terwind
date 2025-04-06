@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.embeddedhtml": "html",
         "*.html": "html",
         "macros.h": "c",
         "pch.h": "c",
@@ -14,7 +15,8 @@
         "structs.h": "c",
         "ioctl.h": "c",
         "ioctls.h": "c",
-        "files.h": "c"
+        "files.h": "c",
+        "string.h": "c"
     },
     "C_Cpp.intelliSenseEngineFallback": "Disabled"
 }

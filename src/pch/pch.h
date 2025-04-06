@@ -8,6 +8,7 @@
 #include <inttypes.h>
 #include <stdarg.h>
 #include <signal.h>
+#include <math.h>
 
 #ifdef _WIN32
 #include <Windows.h>

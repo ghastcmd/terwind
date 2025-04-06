@@ -31,7 +31,7 @@ thread_count = 12
 flags = -Wall -Wextra -Werror
 
 # library links flags
-ldflags = 
+ldflags = -lm 
 # windows specific libraries
 ifeq ($(OS), Windows_NT)
 	ldflags+=
@@ -57,7 +57,7 @@ $(obj)/%.o: %.c
 gch = $(pch:.h=.h.gch)
 $(gch): $(pch)
 	$(SS)echo Compiling precompiled header $@
-	$(SS)$(CC) $(mk_obj) $<
+	$(SS)$(CC) $(mk_obj) $(ldflags) $<
 
 help:
 	@echo $(gch)
@@ -101,14 +101,21 @@ else
 endif
 
 
+comma := ,
+space := $(null) #
 
 .PHONY: clean
 clean:
 	$(SS)echo Cleaning ...
-	$(SS)rm -f $(wildcard $(obj)/*)
-	$(SS)rm -f $(target)
-	$(SS)rm -f lib.a
-	$(SS)rm -f $(wildcard *.dat)
+ifneq ($(wildcard $(obj)/*),$(null))
+	-$(SS)powershell -c 'rm -Force -Recurse $(subst $(space),$(comma),$(strip $(wildcard $(obj)/*))) -ErrorAction SilentlyContinue'
+endif
+	-$(SS)powershell -c 'rm -Force -Recurse $(target) -ErrorAction SilentlyContinue'
+	-$(SS)powershell -c 'rm -Force -Recurse lib.a -ErrorAction SilentlyContinue'
+	-$(SS)powershell -c 'rm -Force -Recurse $(src_d)/$(gch) -ErrorAction SilentlyContinue'
+ifneq ($(wildcard *.dat),$(null))	
+	-$(SS)powershell -c 'rm -Force -Recurse $(subst $(space),$(comma),$(strip $(wildcard *.dat))) -ErrorAction SilentlyContinue'
+endif
 
 .PHONY: verbose
 verbose:
@@ -125,6 +132,8 @@ vars:
 	$(SS)echo flags:   $(flags)
 	$(SS)echo opt:     $(opt)
 	$(SS)echo config:  $(config)
+	$(SS)echo pch:     $(pch)
+	$(SS)echo gch:     $(gch)
 
 .PHONY: run
 run: build
