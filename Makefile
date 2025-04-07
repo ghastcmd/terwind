@@ -2,7 +2,7 @@
 src_d = src
 obj = bin
 # include folders
-include = src/include src/pch
+include = src/include src/pch src
 src = $(filter-out $(include), $(patsubst %/.,%,$(wildcard $(src_d)/*/.))) $(src_d)
 
 # cli compiler
