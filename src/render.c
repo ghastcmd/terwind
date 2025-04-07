@@ -49,6 +49,24 @@ char get_inclination(float val)
     }
 }
 
+static char numbers_display[64] = {0};
+bool display_numbers = false;
+
+void assign_logger()
+{
+    display_numbers = true;
+}
+
+const char * get_logger()
+{
+    return numbers_display;
+}
+
+void remove_logger()
+{
+    display_numbers = false;
+}
+
 void render_line(float start_pos_x, float start_pos_y, float end_pos_x, float end_pos_y, bool do_intersections)
 {
     TerDim_t dims = terwind_get_dimensions();
@@ -116,6 +134,8 @@ void render_line(float start_pos_x, float start_pos_y, float end_pos_x, float en
                 
                 logg_info("dlr %f, c %f, dul %f\n", current_lower_right_coef, coef, current_upper_left_coef);
 
+                snprintf(numbers_display, 64, "c %f", coef);
+
                 if (coef <= current_lower_right_coef && coef >= current_upper_left_coef)
                 {
                     char resolved_inclination = get_inclination(coef);
@@ -139,6 +159,8 @@ void render_line(float start_pos_x, float start_pos_y, float end_pos_x, float en
 
         int x_delta_int = (int)(end_pos_x - start_pos_x);
         int y_delta_int = (int)(end_pos_y - start_pos_y);
+
+
 
         for (int i = 0; i <= x_delta_int; ++i)
         {

@@ -71,7 +71,7 @@ void terwind_update_func(GameVars_t* vars, kbd_keys_t key, float dt)
 
     {
         float x = vars->another_x_pos - 15, y = vars->another_y_pos - 15;
-        float theta = dt;
+        float theta = dt * 1.3f;
         vars->another_x_pos = x * cos(theta) - y * sin(theta) + 15;
         vars->another_y_pos = x * sin(theta) + y * cos(theta) + 15;
     }
@@ -107,7 +107,19 @@ void terwind_draw_func(const GameVars_t* vars)
     spacing += 12;
     render_line(spacing + 2, 2, spacing + 2, 10, true);
 
+    assign_logger();
     render_line(15, 15, vars->another_x_pos, vars->another_y_pos, true);
+    
+    const char * coef_string = get_logger();
+    const size_t coef_string_size = strlen(coef_string);
+    const size_t w = wnd_buffer->dim.width, h = wnd_buffer->dim.height;
+    render_letters(w - coef_string_size, h - 1, coef_string, coef_string_size);
+
+    logg_status("x %f, y %f, %s\n", vars->another_x_pos, vars->another_y_pos, coef_string);
+
+    remove_logger();
 
     terwind_put_pixel(vars->x_pos + 10, 13, '*');
+
+
 }
