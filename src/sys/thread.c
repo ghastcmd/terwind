@@ -33,9 +33,8 @@ void thread_terminate(thread_t thread)
 #ifdef _WINDOWS_
     TerminateThread(thread, 0);
 #else
-    pthread_kill(thread, SIGKILL);
-    pthread_join(thread, NULL);
     pthread_cancel(thread);
+    pthread_join(thread, NULL);
 #endif
 
     // TODO: Error handling

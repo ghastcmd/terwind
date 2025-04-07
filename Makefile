@@ -17,15 +17,21 @@ SS = @
 # pre-compiled header
 pch = pch/pch.h
 
+# creating version path
+ifeq ($(OS),Windows_NT)
+version :=windows
+else
+version :=linux
+endif
+
 # target
-target = $(obj)/bin
+target := $(obj)/$(version)/bin
 ifeq ($(OS),Windows_NT)
 	target:=$(target).exe
 endif
 
 # option flags
 opt =
-thread_count = 12
 
 # additional flags
 flags = -Wall -Wextra -Werror
@@ -43,14 +49,14 @@ endif
 inc = $(addprefix $(mk_inc),$(include))
 
 source = $(foreach var,$(src),$(wildcard $(var)/*.c))
-object = $(patsubst %,$(obj)/%.o, $(basename $(notdir $(source))))
+object = $(patsubst %,$(obj)/$(version)/%.o, $(basename $(notdir $(source))))
 
 $(target): $(object)
 	$(SS)echo Compiling target $@
 	$(SS)$(CC) $^ $(mk_out) $@ $(inc) $(opt) $(flags) $(ldflags)
 
 VPATH = $(src)
-$(obj)/%.o: %.c
+$(obj)/$(version)/%.o: %.c
 	$(SS)echo Compiling $< to $@
 	$(SS)$(CC) $(mk_obj) $< $(mk_out) $@ $(inc) $(opt) $(flags)
 
@@ -71,11 +77,25 @@ mklib_o: $(addprefix $(obj)/,$(addsuffix .o,$(obj_folders)))
 
 .PHONY: build compile
 build:
-	@$(MAKE) -s compile -j $(thread_count)
+	@$(MAKE) -s compile -j
 
-compile: $(gch) $(obj) $(target)
+ifeq ($(OS),Windows_NT)
+path_v=$(obj)\$(version)
+
+$(obj)\$(version): $(obj)
+	mkdir $(obj)\$(version)
+else
+path_v := $(obj)/$(version)
+
+$(obj)/$(version): $(obj)
+	mkdir $(obj)/$(version)
+endif
+
+compile: $(gch) $(path_v) $(target)
+
 
 $(obj):
+	echo another
 	mkdir $(obj)
 
 config:=
