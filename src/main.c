@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     signal(SIGINT, main_exit);
     signal(SIGABRT, main_exit);
     terminal_setup();
-    logg_setup(2, "fps.dat", "misc.dat");
+    logg_setup(2, "log/fps.dat", "log/misc.dat");
 
     TerminalCanvas_t wnd = terwind_get_canvas();
     terwind_set_buffer(&wnd);

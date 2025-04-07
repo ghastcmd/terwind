@@ -41,12 +41,30 @@ void thread_terminate(thread_t thread)
     // TODO: Error handling
 }
 
+
+/**
+ * @brief Creates a mutex handler
+ * 
+ * @return a handle to the mutex. Must be cleaned manually.
+ */
 thread_mutex_t thread_create_mutex()
 {
-#ifdef _WIN32
+#ifdef _WINDOWS_
     return CreateMutexA(NULL, 0, NULL);
 #else
-    return PTHREAD_MUTEX_INITIALIZER;
+    pthread_mutex_t ret = PTHREAD_MUTEX_INITIALIZER;
+    pthread_mutex_t * p_ret = malloc(sizeof(pthread_mutex_t));
+    *p_ret = ret;
+    return p_ret;
+#endif
+}
+
+void thread_clean_mutex(thread_mutex_t handle)
+{
+#ifdef _WINDOWS_
+    CloseHandle(handle);
+#else
+    free(handle);
 #endif
 }
 

@@ -5,7 +5,7 @@
 typedef pthread_t thread_t;
 typedef void*(*thread_sts_t)(void*);
 typedef void* thread_ret_t;
-typedef pthread_mutex_t thread_mutex_t;
+typedef pthread_mutex_t* thread_mutex_t;
 #elif _WIN32
 typedef HANDLE thread_t;
 typedef PTHREAD_START_ROUTINE thread_sts_t;

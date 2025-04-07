@@ -107,14 +107,22 @@ space := $(null) #
 .PHONY: clean
 clean:
 	$(SS)echo Cleaning ...
+ifeq ($(OS),Windows_NT)
 ifneq ($(wildcard $(obj)/*),$(null))
 	-$(SS)powershell -c 'rm -Force -Recurse $(subst $(space),$(comma),$(strip $(wildcard $(obj)/*))) -ErrorAction SilentlyContinue'
 endif
 	-$(SS)powershell -c 'rm -Force -Recurse $(target) -ErrorAction SilentlyContinue'
 	-$(SS)powershell -c 'rm -Force -Recurse lib.a -ErrorAction SilentlyContinue'
 	-$(SS)powershell -c 'rm -Force -Recurse $(src_d)/$(gch) -ErrorAction SilentlyContinue'
-ifneq ($(wildcard *.dat),$(null))	
-	-$(SS)powershell -c 'rm -Force -Recurse $(subst $(space),$(comma),$(strip $(wildcard *.dat))) -ErrorAction SilentlyContinue'
+ifneq ($(wildcard log/*.dat),$(null))	
+	-$(SS)powershell -c 'rm -Force -Recurse $(subst $(space),$(comma),$(strip $(wildcard log/*.dat))) -ErrorAction SilentlyContinue'
+endif
+else
+	$(SS)rm -rf $(wildcard $(obj)/*)
+	$(SS)rm -rf $(target)
+	$(SS)rm -rf lib.a
+	$(SS)rm -rf $(src_d)/$(gch)
+	$(SS)rm -rf $(wildcard log/*.dat)
 endif
 
 .PHONY: verbose
@@ -139,9 +147,15 @@ vars:
 run: build
 	$(SS)$(target)
 
+to_dump = 
+
 .PHONY: dump
 dump: build
+ifeq ($(to_dump),$(null))
 	objdump -M intel -d $(obj)/main.o
+else
+	objdump -M intel -d $(obj)/$(to_dump)
+endif
 
 .PHONY: valgrind
 valgrind: build
