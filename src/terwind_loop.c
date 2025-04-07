@@ -69,6 +69,13 @@ void terwind_update_func(GameVars_t* vars, kbd_keys_t key, float dt)
         vars->another_y_pos += 1;
     }
 
+    {
+        float x = vars->another_x_pos - 15, y = vars->another_y_pos - 15;
+        float theta = dt;
+        vars->another_x_pos = x * cos(theta) - y * sin(theta) + 15;
+        vars->another_y_pos = x * sin(theta) + y * cos(theta) + 15;
+    }
+
     vars->x_pos += (float)(vars->i * 1) * dt;
     vars->y_pos += (float)(vars->j * 0.5f) * dt;
 
