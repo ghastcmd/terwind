@@ -160,8 +160,6 @@ void render_line(float start_pos_x, float start_pos_y, float end_pos_x, float en
         int x_delta_int = (int)(end_pos_x - start_pos_x);
         int y_delta_int = (int)(end_pos_y - start_pos_y);
 
-
-
         for (int i = 0; i <= x_delta_int; ++i)
         {
             for (int j = 0; j <= y_delta_int; ++j)
@@ -181,6 +179,8 @@ void render_line(float start_pos_x, float start_pos_y, float end_pos_x, float en
                 float current_lower_left_coef = -(current_x_delta_lower_left / current_y_delta_lower_left);
 
                 logg_info("c %f\n", coef);
+
+                snprintf(numbers_display, 64, "c %f", coef);
 
                 if (coef >= current_upper_right_coef && coef <= current_lower_left_coef)
                 {
