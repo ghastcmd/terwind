@@ -13,7 +13,43 @@ void render_letters(float start_pos_x, float start_pos_y, const char * to_write,
     }
 }
 
-void render_line(float start_pos_x, float start_pos_y, float end_pos_x, float end_pos_y)
+char get_inclination(float val)
+{
+    if (val > 2.5f)
+    {
+        return '\\';
+    }
+    else if (val >= 0.5f && val <= 2.5f)
+    {
+        return '-';
+    }
+    else if (val < 2.5f && val > 0.2f)
+    {
+        return '/';
+    }
+    else if (val <= 0.2f && val >= 0.f)
+    {
+        return '-';
+    }
+    else if (val < 0.f && val >= -0.18f)
+    {
+        return '|';
+    }
+    else if (val < -0.18f && val >= -0.4f)
+    {
+        return '\\';
+    }
+    else if (val < -0.4f && val >= -1.5f)
+    {
+        return '-';
+    } 
+    else
+    {
+        return '\\';
+    }
+}
+
+void render_line(float start_pos_x, float start_pos_y, float end_pos_x, float end_pos_y, bool do_intersections)
 {
     TerDim_t dims = terwind_get_dimensions();
     float pixel_width = (1.f / dims.width);
@@ -82,7 +118,9 @@ void render_line(float start_pos_x, float start_pos_y, float end_pos_x, float en
 
                 if (coef <= current_lower_right_coef && coef >= current_upper_left_coef)
                 {
-                    terwind_put_pixel(start_pos_x + i, start_pos_y + j, '#');
+                    char resolved_inclination = get_inclination(coef);
+
+                    terwind_put_pixel(start_pos_x + i, start_pos_y + j, resolved_inclination);
                 }
             }
         }
@@ -120,11 +158,21 @@ void render_line(float start_pos_x, float start_pos_y, float end_pos_x, float en
                 float current_y_delta_lower_left = current_pos_y_lower_left - true_coords_start_y;
                 float current_lower_left_coef = -(current_x_delta_lower_left / current_y_delta_lower_left);
 
+                logg_info("c %f\n", coef);
+
                 if (coef >= current_upper_right_coef && coef <= current_lower_left_coef)
                 {
-                    terwind_put_pixel(start_pos_x + i, start_pos_y + j, '#');
+                    char resolved_inclination = get_inclination(coef);
+
+                    terwind_put_pixel(start_pos_x + i, start_pos_y + j, resolved_inclination);
                 }
             }
         }
+    }
+
+    if (do_intersections)
+    {
+        terwind_put_pixel(start_pos_x, start_pos_y, '*');
+        terwind_put_pixel(end_pos_x, end_pos_y, '*');
     }
 }

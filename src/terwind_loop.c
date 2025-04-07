@@ -11,9 +11,10 @@ extern TerminalCanvas_t* wnd_buffer;
 
 void terwind_game_loop(const int fps_cap)
 {
-
     GameVariables_t vars = { 0 };
     vars.i = 1;
+    vars.another_x_pos = 15 + 4;
+    vars.another_y_pos = 15 + 4;
 
     thread_t async_thread = thread_init_async_input();
 
@@ -53,8 +54,19 @@ void terwind_update_func(GameVars_t* vars, kbd_keys_t key, float dt)
 {
     if (key == kb_right_arrow)
     {
-        vars->i = !(vars->i);
-        vars->j = !(vars->j);
+        vars->another_x_pos += 1;
+    }
+    else if (key == kb_left_arrow)
+    {
+        vars->another_x_pos -= 1;
+    }
+    else if (key == kb_up_arrow)
+    {
+        vars->another_y_pos -= 1;
+    }
+    else if (key == kb_bottom_arrow)
+    {
+        vars->another_y_pos += 1;
     }
 
     vars->x_pos += (float)(vars->i * 1) * dt;
@@ -80,10 +92,15 @@ void terwind_draw_func(const GameVars_t* vars)
 
     render_letters(vars->x_pos, 2, "this is the start", sizeof("this is the start"));
 
-    render_line(2, 1, 10, 10);
+    render_line(2, 10, 10, 1, true);
+    float spacing = 12.f;
+    render_line(spacing + 2, 2, spacing + 10, 1, true);
+    render_line(spacing + 0, 0, spacing + 10, 1, true);
+    render_line(spacing + 2, 1, spacing + 10, 10, true);
+    spacing += 12;
+    render_line(spacing + 2, 2, spacing + 2, 10, true);
 
-    terwind_put_pixel(2, 1, '*');
-    terwind_put_pixel(10, 10, '*');
+    render_line(15, 15, vars->another_x_pos, vars->another_y_pos, true);
 
     terwind_put_pixel(vars->x_pos + 10, 13, '*');
 }
