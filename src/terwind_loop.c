@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "terwind.h"
 #include "logg/logg.h"
-#include "thread.h"
+#include "sys/thread.h"
 #include "render.h"
 
 void terwind_update_func(GameVars_t* vars, kbd_keys_t key, float delta_time);
