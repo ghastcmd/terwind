@@ -8,7 +8,7 @@ void * dll_load(const char * name)
 #ifdef _WINDOWS_
     snprintf(fmt_name, 128, "lib%s.dll", name);
 #else
-    snprintf(fmt_name, 128, "%s.dll", name);
+    snprintf(fmt_name, 128, "%s.so", name);
 #endif
 
 #ifdef _WINDOWS_
@@ -26,7 +26,6 @@ char * dll_check_erros(void * dll_handle)
     {
 #ifdef _WINDOWS_
         snprintf(dll_load_error_fmt, 512, "Dll Error: %li", GetLastError());
-        puts(dll_load_error_fmt);
         return dll_load_error_fmt;
 #else
         snprintf(dll_load_error_fmt, 512, "Dll Error: %s", dlerror());
@@ -50,7 +49,6 @@ void * dll_get_symbol(void * handle, const char * name)
 #else
         snprintf(dll_load_error_fmt, 512, "Couldn't load symbol <%s>.\nError: %s", name, dlerror());
 #endif
-        puts(dll_load_error_fmt);
     }
 
     return proc_handle;

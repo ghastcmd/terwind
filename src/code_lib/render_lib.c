@@ -1,4 +1,6 @@
-__declspec(dllexport)
+#include "pch.h"
+
+DLLEXPORT
 char get_inclination(float val)
 {
     if (val > 2.5f)

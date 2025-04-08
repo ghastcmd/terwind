@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
     (void)argv, (void)argc;
     signal(SIGINT, main_exit);
     signal(SIGABRT, main_exit);
+    signal(SIGSEGV, main_exit);
     terminal_setup();
     logg_setup(2, "log/fps.dat", "log/misc.dat");
 
@@ -54,6 +55,8 @@ void main_exit(int signo)
         exit(0);
     case SIGABRT:
         exit(3);
+    case SIGSEGV:
+        exit(SIGSEGV);
     }
 }
 

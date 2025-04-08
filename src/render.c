@@ -14,12 +14,14 @@ void render_letters(float start_pos_x, float start_pos_y, const char * to_write,
     }
 }
 
+void * lib_handle = NULL;
 char (*get_inclination)(float) = NULL;
 
 void get_func_get_inclination()
 {
-    dll_close(get_inclination);
+    dll_close(lib_handle);
     void * handle = dll_load("code_lib");
+    lib_handle = handle;
     dll_check_erros(handle);
     handle = dll_get_symbol(handle, "get_inclination");
     get_inclination = (char (*)(float))(handle);

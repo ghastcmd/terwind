@@ -2,6 +2,7 @@
 comma := ,
 space := $(null) #
 wild  := *
+dollar := $
 
 # master folders
 src_d = src
@@ -53,7 +54,7 @@ ldflags = -lm
 ifeq ($(OS),Windows_NT)
 	ldflags += 
 else
-	ldflags += -lpthread
+	ldflags += -lpthread -ldl
 endif
 
 VPATH = $(src) $(libs_d)
@@ -84,14 +85,23 @@ $(gch): $(pch)
 # making dynamic libraries
 $(obj)/$(version)/lib/%.o: %c
 	$(SS)echo Compiling lib item $< to $@
-	$(SS)$(CC) $(mk_obj) $< $(mk_out) $@ $(inc_pch)
+ifeq ($(OS),Windows_NT)
+	$(SS)$(CC) $(mk_obj) $< $(mk_out) $@ $(inc_pch) $(flags)
+else
+	$(SS)$(CC) $(mk_obj) -fPIC $< $(mk_out) $@ $(inc_pch) $(flags)
+endif
 
 $(code_lib_target): $(code_lib_object)
 	$(SS)echo Compiling dynamic library target $@
-	$(SS)$(CC) -shared $^ $(mk_out) $@ $(inc_pch)
+ifeq ($(OS),Windows_NT)
+	$(SS)$(CC) -shared $^ $(mk_out) $@ $(inc_pch) $(flags)
+else
+	$(SS)$(CC) -shared -fPIC $^ $(mk_out) $@ $(inc_pch) $(flags)
+endif
 
 help:
 	@echo $(gch)
+	echo $(dollar)
 
 # makind directories
 obj_folders :=
@@ -106,8 +116,7 @@ build:
 	@$(MAKE) -s compile -j
 
 ifeq ($(OS),Windows_NT)
-path_v = $(obj)/$(version)/.stamp
-path_v_w = $(obj)/$(version)/lib/.stamp
+path_v = $(obj)/$(version)/lib/.stamp
 
 $(obj)/$(version)/.stamp: $(obj)
 	-mkdir $(obj)\$(version)
@@ -118,17 +127,18 @@ $(obj)/$(version)/lib/.stamp: $(obj)/$(version)/.stamp
 	touch $(obj)/$(version)/lib/.stamp
 else
 #linux
-path_v := $(obj)/$(version)
-path_v_w = $(obj)/$(version)/lib
+path_v = $(obj)/$(version)/lib/.stamp
 
-$(obj)/$(version): $(obj)
-	mkdir $(obj)/$(version)
+$(obj)/$(version)/.stamp: $(obj)
+	-mkdir $(obj)/$(version)
+	touch $(obj)/$(version)/.stamp
 
-$(obj)/$(version)/lib: $(obj)/$(version)
-	mkdir $(obj)/$(version)/lib
+$(obj)/$(version)/lib/.stamp: $(obj)/$(version)/.stamp
+	-mkdir $(obj)/$(version)/lib
+	touch $(obj)/$(version)/lib/.stamp
 endif
 
-compile: $(gch) $(path_v) $(path_v_w) $(target)
+compile: $(gch) $(path_v) $(target)
 
 
 $(obj):
@@ -199,7 +209,11 @@ vars:
 
 .PHONY: run
 run: build
+ifeq ($(OS),Windows_NT)
 	$(SS)$(target)
+else
+	$(SS)LD_LIBRARY_PATH=$(dollar)(pwd)/$(obj)/$(version)/:$(dollar)LD_LIBRARY_PATH $(target)
+endif
 
 to_dump = 
 

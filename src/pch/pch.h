@@ -19,6 +19,9 @@
 #include <AccCtrl.h>
 #include <AclAPI.h>
 
+#define DLLEXPORT __declspec(dllexport)
+#define DLLIMPORT __declspec(dllimport)
+
 #else
 #include <sys/ioctl.h>
 #include <sys/stat.h>
@@ -31,6 +34,9 @@
 #include <sys/time.h>
 
 #include <dlfcn.h>
+
+#define DLLEXPORT __attribute__((visibility("default")))
+#define DLLIMPORT 
 
 #define INIT
 
