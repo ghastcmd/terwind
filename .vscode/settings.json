@@ -17,7 +17,8 @@
         "ioctls.h": "c",
         "files.h": "c",
         "string.h": "c",
-        "thread_keys.h": "c"
+        "thread_keys.h": "c",
+        "stdlib.h": "c"
     },
     "C_Cpp.intelliSenseEngineFallback": "Disabled"
 }

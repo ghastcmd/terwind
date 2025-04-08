@@ -4,6 +4,7 @@
 
 #include "terwind.h"
 #include "logg/logg.h"
+#include "sys/dll.h"
 
 void render_letters(float start_pos_x, float start_pos_y, const char * to_write, size_t string_size)
 {
@@ -13,40 +14,15 @@ void render_letters(float start_pos_x, float start_pos_y, const char * to_write,
     }
 }
 
-char get_inclination(float val)
+char (*get_inclination)(float) = NULL;
+
+void get_func_get_inclination()
 {
-    if (val > 2.5f)
-    {
-        return '\\';
-    }
-    else if (val >= 0.5f && val <= 2.5f)
-    {
-        return '-';
-    }
-    else if (val < 2.5f && val > 0.2f)
-    {
-        return '/';
-    }
-    else if (val <= 0.2f && val >= 0.f)
-    {
-        return '-';
-    }
-    else if (val < 0.f && val >= -0.18f)
-    {
-        return '|';
-    }
-    else if (val < -0.18f && val >= -0.4f)
-    {
-        return '\\';
-    }
-    else if (val < -0.4f && val >= -1.5f)
-    {
-        return '-';
-    } 
-    else
-    {
-        return '\\';
-    }
+    dll_close(get_inclination);
+    void * handle = dll_load("code_lib");
+    dll_check_erros(handle);
+    handle = dll_get_symbol(handle, "get_inclination");
+    get_inclination = (char (*)(float))(handle);
 }
 
 static char numbers_display[64] = {0};
@@ -69,6 +45,8 @@ void remove_logger()
 
 void render_line(float start_pos_x, float start_pos_y, float end_pos_x, float end_pos_y, bool do_intersections)
 {
+    get_func_get_inclination();
+
     TerDim_t dims = terwind_get_dimensions();
     float pixel_width = (1.f / dims.width);
     float pixel_height = (1.f / dims.height);

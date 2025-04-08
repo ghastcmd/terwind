@@ -10,6 +10,7 @@
 #include <signal.h>
 #include <math.h>
 
+
 #ifdef _WIN32
 #include <Windows.h>
 #include <conio.h>
@@ -28,6 +29,8 @@
 #include <dirent.h>
 
 #include <sys/time.h>
+
+#include <dlfcn.h>
 
 #define INIT
 
