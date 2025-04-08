@@ -35,18 +35,19 @@ endif
 # target
 target := $(obj)/$(version)/bin
 code_lib_target = 
+code_lib_version := 0
 ifeq ($(OS),Windows_NT)
 	target := $(target).exe
-	code_lib_target := $(obj)/$(version)/libcode_lib.dll
+	code_lib_target := $(obj)/$(version)/libcode_lib$(code_lib_version).dll
 else
-	code_lib_target := $(obj)/$(version)/code_lib.so
+	code_lib_target := $(obj)/$(version)/code_lib$(code_lib_version).so
 endif
 
 # option flags
 opt =
 
 # additional flags
-flags = -Wall -Wextra -Werror
+flags = -Wall -Wextra -Werror -g
 
 # library links flags
 ldflags = -lm 
@@ -90,6 +91,8 @@ ifeq ($(OS),Windows_NT)
 else
 	$(SS)$(CC) $(mk_obj) -fPIC $< $(mk_out) $@ $(inc_pch) $(flags)
 endif
+
+code_lib_hot_reload: $(code_lib_target)
 
 $(code_lib_target): $(code_lib_object)
 	$(SS)echo Compiling dynamic library target $@

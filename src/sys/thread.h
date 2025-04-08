@@ -19,6 +19,14 @@ void thread_join(thread_t thread);
 
 void thread_terminate(thread_t thread);
 
+thread_mutex_t thread_create_mutex();
+
+void thread_clean_mutex(thread_mutex_t handle);
+
+void thread_mutex_lock(thread_mutex_t mutex);
+
+void thread_mutex_unlock(thread_mutex_t mutex);
+
 thread_t thread_init_async_input();
 
 kbd_keys_t thread_get_async_input();

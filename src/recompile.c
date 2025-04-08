@@ -1,0 +1,59 @@
+#include "pch.h"
+
+#include "sys/thread.h"
+
+int version = 0;
+thread_mutex_t version_mutex = NULL;
+
+void recompile_code_lib_init_mutex()
+{
+    version_mutex = thread_create_mutex();
+}
+
+void recompile_code_lib_free_mutex()
+{
+    thread_clean_mutex(version_mutex);
+}
+
+thread_t recompile_thread_alloc[2];
+
+thread_ret_t recompile_code_lib_do(void * ptr)
+{
+    (void)ptr;
+
+    thread_mutex_lock(version_mutex);
+    if (version == 0)
+    {
+        version = 1;
+    }
+    else
+    {
+        version = 0;
+    }
+    thread_mutex_unlock(version_mutex);
+
+    char cmd[128] = {0};
+    snprintf(cmd, 128, "make -s code_lib_hot_reload code_lib_version=%i", version);
+    system(cmd);
+
+    return (thread_ret_t)0;
+}
+
+void recompile_code_lib()
+{
+    recompile_thread_alloc[version] = thread_create(recompile_code_lib_do, NULL);
+}
+
+void recompile_terminate_thread(int no)
+{
+    thread_terminate(recompile_thread_alloc[no]);
+}
+
+int recompile_code_lib_get_version()
+{
+    thread_mutex_lock(version_mutex);
+    int ret_version = version;
+    thread_mutex_unlock(version_mutex);
+
+    return ret_version;
+}
