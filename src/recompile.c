@@ -1,6 +1,7 @@
 #include "pch.h"
 
 #include "sys/thread.h"
+#include "logg/logg.h"
 
 int version = 0;
 thread_mutex_t version_mutex = NULL;
@@ -21,20 +22,28 @@ thread_ret_t recompile_code_lib_do(void * ptr)
 {
     (void)ptr;
 
+    
     thread_mutex_lock(version_mutex);
+    int tmp_version;
     if (version == 0)
     {
-        version = 1;
+        tmp_version = 1;
     }
     else
     {
-        version = 0;
+        tmp_version = 0;
     }
     thread_mutex_unlock(version_mutex);
 
     char cmd[128] = {0};
-    snprintf(cmd, 128, "make -s code_lib_hot_reload code_lib_version=%i", version);
-    system(cmd);
+    snprintf(cmd, 128, "make code_lib_hot_reload code_lib_version=%i", tmp_version);
+    int cmd_run_ret = system(cmd);
+
+    logg_status("%i\n", cmd_run_ret);
+
+    thread_mutex_lock(version_mutex);
+    version = tmp_version;
+    thread_mutex_unlock(version_mutex);
 
     return (thread_ret_t)0;
 }
