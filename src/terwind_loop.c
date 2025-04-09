@@ -16,6 +16,7 @@ void terwind_game_loop(const int fps_cap)
     vars.i = 1;
     vars.another_x_pos = 15 + 4;
     vars.another_y_pos = 15 + 4;
+    vars.can_rotate = true;
 
     thread_t async_thread = thread_init_async_input();
     recompile_code_lib_init_mutex();
@@ -76,7 +77,13 @@ void terwind_update_func(GameVars_t* vars, kbd_keys_t key, float dt)
     {
         recompile_code_lib();
     }
+    
+    if (key == kb_letter_r)
+    {
+        vars->can_rotate = !vars->can_rotate;
+    }
 
+    if (vars->can_rotate)
     {
         float x = vars->another_x_pos - 15, y = vars->another_y_pos - 15;
         float theta = dt * 1.3f;

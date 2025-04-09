@@ -3,14 +3,6 @@
 DLLEXPORT
 char get_inclination(float val)
 {
-    (void)val;
-
-    #if 0
-    
-    return '#';
-
-    #else
-
     if (val > 2.5f)
     {
         return '\\';
@@ -23,11 +15,7 @@ char get_inclination(float val)
     {
         return '/';
     }
-    else if (val <= 0.2f && val >= 0.f)
-    {
-        return '-';
-    }
-    else if (val < 0.f && val >= -0.18f)
+    else if (val <= 0.2f && val >= -0.18f)
     {
         return '|';
     }
@@ -35,7 +23,7 @@ char get_inclination(float val)
     {
         return '\\';
     }
-    else if (val < -0.4f && val >= -1.5f)
+    else if (val < -1.f && val >= -1.5f)
     {
         return '-';
     } 
@@ -43,6 +31,4 @@ char get_inclination(float val)
     {
         return '\\';
     }
-
-    #endif
 }

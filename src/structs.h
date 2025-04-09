@@ -20,4 +20,6 @@ typedef struct GameVariables
 
     float another_x_pos;
     float another_y_pos;
+
+    bool can_rotate;
 } GameVars_t, GameVariables_t, CanvasVariables_t;
