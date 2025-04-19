@@ -4,7 +4,7 @@
 #include "internal/dll.h"
 #include "logg/logg.h"
 
-int version = 0;
+int version = 10;
 thread_mutex_t version_mutex = NULL;
 
 thread_t recompile_thread_alloc[3];
@@ -78,21 +78,23 @@ void * recompile_get_handle()
     if (tmp_lib_version != lib_version)
     {
         dll_close(current_lib_handle);
+
         recompile_terminate_thread(lib_version);
         lib_version = tmp_lib_version;
-    
+
         char lib_name[128] = {0};
         snprintf(lib_name, 128, "code_lib%i", lib_version);
         void * handle = dll_load(lib_name);
         
         current_lib_handle = handle;
-
+    
         char * error_fmt = dll_check_errors_load(handle);
         if (error_fmt) 
         {
             logg_status(error_fmt);
         }
     }
+
     
     return current_lib_handle;
 }

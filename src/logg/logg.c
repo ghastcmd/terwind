@@ -1,4 +1,5 @@
 #include "pch.h"
+
 #include "logg.h"
 
 #ifdef LOGG
@@ -12,6 +13,17 @@ enum fileno
     loggno_default,
 };
 
+FILE * logg_fopen(const char * filename, const char * mode)
+{
+#ifdef _WIN32
+    FILE * file_ptr = NULL;
+    fopen_s(&file_ptr, filename, mode);
+    return file_ptr;
+#else
+    return fopen(filename, mode);
+#endif
+}
+
 
 void logg_setup(const uint32_t size, ...)
 {
@@ -23,8 +35,7 @@ void logg_setup(const uint32_t size, ...)
     for(uint32_t i = 0; i < size; i++)
     {
         register const char* arg = va_arg(args, char*);
-        int file_open_errno = fopen_s(&file_list[i], arg, "w+");
-        (void)file_open_errno;
+        file_list[i] = logg_fopen(arg, "w+");
     }
 
     file_list_size = size;
