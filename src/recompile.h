@@ -11,3 +11,5 @@ void recompile_code_lib_do();
 void recompile_terminate_thread(int no);
 
 int recompile_code_lib_get_version();
+
+void * recompile_get_handle();

@@ -4,7 +4,7 @@
 
 #include "terwind.h"
 #include "logg/logg.h"
-#include "sys/dll.h"
+#include "internal/dll.h"
 #include "recompile.h"
 
 void render_letters(float start_pos_x, float start_pos_y, const char * to_write, size_t string_size)
@@ -48,27 +48,11 @@ char get_inclination(float val)
     }
 }
 
-void * lib_handle = NULL;
 char (*inc_get_inclination)(float) = NULL;
-int lib_version = 0;
 
 void get_func_get_inclination()
 {
-    dll_close(lib_handle);
-
-    int tmp_lib_version = recompile_code_lib_get_version();
-    if (tmp_lib_version != lib_version)
-    {
-        recompile_terminate_thread(lib_version);
-        lib_version = tmp_lib_version;
-    }
-    char lib_name[128] = {0};
-    snprintf(lib_name, 128, "code_lib%i", lib_version);
-    void * handle = dll_load(lib_name);
-    
-    lib_handle = handle;
-    dll_check_erros(handle);
-
+    void * handle = recompile_get_handle();
     handle = dll_get_symbol(handle, "get_inclination");
     inc_get_inclination = (char (*)(float))(handle);
 }

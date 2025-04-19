@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "sys/thread.h"
+#include "internal/thread.h"
 #include "terminal.h"
 
 thread_t thread_create(thread_ret_t (*foo)(void*), void* param)

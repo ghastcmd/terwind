@@ -20,17 +20,16 @@ void * dll_load(const char * name)
     return ret;
 }
 
-char * dll_check_erros(void * dll_handle)
+char * dll_check_errors_load(void * dll_handle)
 {
     if (!dll_handle)
     {
 #ifdef _WINDOWS_
         snprintf(dll_load_error_fmt, 512, "Dll Error: %li", GetLastError());
-        return dll_load_error_fmt;
 #else
         snprintf(dll_load_error_fmt, 512, "Dll Error: %s", dlerror());
-        return dll_load_error_fmt;
 #endif
+        return dll_load_error_fmt;
     }
     return NULL;
 }
@@ -42,6 +41,7 @@ void * dll_get_symbol(void * handle, const char * name)
 #else
     void * proc_handle = dlsym(handle, name);
 #endif
+    
     if (!proc_handle)
     {
 #ifdef _WINDOWS_
@@ -53,6 +53,12 @@ void * dll_get_symbol(void * handle, const char * name)
 
     return proc_handle;
 }
+
+// char * dll_check_errors_get_symbol(void * proc_handle)
+// {
+    
+//     return NULL;
+// }
 
 void dll_close(void * handle)
 {

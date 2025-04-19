@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "terwind.h"
 #include "logg/logg.h"
-#include "sys/thread.h"
+#include "internal/thread.h"
 #include "render.h"
 #include "recompile.h"
 
@@ -130,7 +130,7 @@ void terwind_draw_func(const GameVars_t* vars)
     const size_t w = wnd_buffer->dim.width, h = wnd_buffer->dim.height;
     render_letters(w - coef_string_size, h - 1, coef_string, coef_string_size);
 
-    logg_status("x %f, y %f, %s\n", vars->another_x_pos, vars->another_y_pos, coef_string);
+    logg_info("x %f, y %f, %s\n", vars->another_x_pos, vars->another_y_pos, coef_string);
 
     remove_logger();
 

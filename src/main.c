@@ -11,7 +11,7 @@ void main_exit(int signo);
 #ifndef __library__
 
 #include "recompile.h"
-#include "sys/thread.h"
+#include "internal/thread.h"
 
 int main(int argc, char *argv[])
 {
