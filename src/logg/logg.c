@@ -23,7 +23,8 @@ void logg_setup(const uint32_t size, ...)
     for(uint32_t i = 0; i < size; i++)
     {
         register const char* arg = va_arg(args, char*);
-        file_list[i] = fopen(arg, "w+");
+        int file_open_errno = fopen_s(&file_list[i], arg, "w+");
+        (void)file_open_errno;
     }
 
     file_list_size = size;

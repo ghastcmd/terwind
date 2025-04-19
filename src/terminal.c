@@ -85,10 +85,13 @@ void terminal_zeropos()
     printf("\x1b[0d");
 }
 
+#define nanosleep(n, a)
+
 void terminal_psleep(int psec)
 {
     struct timespec time1 = { 0, 0 }, time2 = { 0, 0 };
     time1.tv_nsec = psec * 1000;
+    (void)time1, (void)time2;
     nanosleep(&time1, &time2);
 }
 

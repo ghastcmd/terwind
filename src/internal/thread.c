@@ -2,6 +2,18 @@
 #include "internal/thread.h"
 #include "terminal.h"
 
+#ifdef _WIN32
+
+#define N_getch _getch
+#define N_kbhit _kbhit
+
+#else
+
+#define N_getch getch
+#define N_kbhit kbhit
+
+#endif
+
 thread_t thread_create(thread_ret_t (*foo)(void*), void* param)
 {
     thread_t thread;
@@ -95,13 +107,13 @@ static thread_ret_t thread_async_input(void* token)
     unsigned char kb_key;
     while(1)
     {
-        kb_key = getch();
+        kb_key = N_getch();
         *(int*)token = 0;
         emmit(kb_key == 0 ? 0xf0 : kb_key, token);
 
-        while (kbhit())
+        while (N_kbhit())
         {
-            emmit(getch(), token);
+            emmit(N_getch(), token);
         }
     }
 
@@ -130,13 +142,13 @@ void thread_test_keys()
     kbd_keys_t token = 0;
     while(token != kb_esc)
     {
-        kb_key = getch();
+        kb_key = N_getch();
         token = 0;
         emmit(kb_key == 0 ? 0xf0 : kb_key, &token);
 
-        while (kbhit())
+        while (N_kbhit())
         {
-            emmit(getch(), &token);
+            emmit(N_getch(), &token);
         }
 
         printf("%i\n", token);

@@ -1,12 +1,24 @@
 #include "pch.h"
 #include "files.h"
 
+#ifdef _WIN32
+
+#define N_chdir _chdir
+#define N_rmdir _rmdir
+
+#else
+
+#define N_chdir chdir
+#define N_rmdir rmdir
+
+#endif
+
 void files_opendir(const char* path, files_dir_t* hnd)
 {
 #ifdef _WIN32
     char s_buff[MAX_PATH];
-    strcpy(s_buff, path);
-    strcat(s_buff, "\\*");
+    strcpy_s(s_buff, MAX_PATH, path);
+    strcat_s(s_buff, MAX_PATH, "\\*");
 
     files_folder_t ffd;
     *hnd = FindFirstFileA(s_buff, &ffd);
@@ -139,7 +151,7 @@ void files_rmdir_r(const char* path)
     files_dir_t dir;
     files_opendir(path, &dir);
     
-    chdir(path);
+    N_chdir(path);
 
     files_folder_t ffd;
     while (files_nextfile(dir, &ffd))
@@ -149,6 +161,6 @@ void files_rmdir_r(const char* path)
     }
 
     files_close(dir);
-    chdir("..");
-    rmdir(path);
+    N_chdir("..");
+    N_rmdir(path);
 }

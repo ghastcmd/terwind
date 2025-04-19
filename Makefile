@@ -14,7 +14,7 @@ libs_d = $(foreach var,$(wildcard $(src_d)/$(wild)_lib/.),$(var:/.=))
 src = $(filter-out $(include), $(patsubst %/.,%,$(wildcard $(src_d)/*/.))) $(src_d)
 
 # cli compiler
-CC = gcc
+CC = clang
 # compiler flags
 mk_obj = -c
 mk_inc = -I
@@ -47,15 +47,15 @@ endif
 opt =
 
 # additional flags
-flags = -Wall -Wextra -Werror -g
+flags = -Wall -Wextra -Werror -ggdb
 
 # library links flags
-ldflags = -lm 
+ldflags =
 # windows specific libraries
 ifeq ($(OS),Windows_NT)
 	ldflags += 
 else
-	ldflags += -lpthread -ldl
+	ldflags += -lm -lpthread -ldl
 endif
 
 VPATH = $(src) $(libs_d)
@@ -72,7 +72,7 @@ code_lib_object = $(patsubst %,$(obj)/$(version)/lib/%.o, $(basename $(notdir $(
 
 $(target): $(code_lib_target) $(object)
 	$(SS)echo Compiling target $@
-	$(SS)$(CC) $^ $(mk_out) $@ $(inc) $(opt) $(flags) $(ldflags)
+	$(SS)$(CC) $(object) $(mk_out) $@ $(inc) $(opt) $(flags) $(ldflags)
 
 $(obj)/$(version)/%.o: %.c
 	$(SS)echo Compiling $< to $@
@@ -100,7 +100,7 @@ build_lib:
 $(code_lib_target): $(code_lib_object)
 	$(SS)echo Compiling dynamic library target $@
 ifeq ($(OS),Windows_NT)
-	$(SS)$(CC) -shared $^ $(mk_out) $@ $(inc_pch) $(flags) -D_EXPORT
+	$(SS)$(CC) -shared -fuse-ld=lld -MD $^ $(mk_out) $@ $(inc_pch) $(flags) -D_EXPORT
 else
 	$(SS)$(CC) -shared -fPIC $^ $(mk_out) $@ $(inc_pch) $(flags) -D_EXPORT
 endif
@@ -119,6 +119,7 @@ mklib_o: $(addprefix $(obj)/,$(addsuffix .o,$(obj_folders)))
 
 .PHONY: build compile
 build:
+	@$(MAKE) -s $(gch) $(path_v)
 	@$(MAKE) -s compile -j
 
 ifeq ($(OS),Windows_NT)
@@ -144,7 +145,7 @@ $(obj)/$(version)/lib/.stamp: $(obj)/$(version)/.stamp
 	touch $(obj)/$(version)/lib/.stamp
 endif
 
-compile: $(gch) $(path_v) $(target)
+compile: $(path_v) $(gch) $(target)
 
 
 $(obj):
