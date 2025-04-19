@@ -15,8 +15,41 @@ void render_letters(float start_pos_x, float start_pos_y, const char * to_write,
     }
 }
 
+DLLEXPORT
+char get_inclination(float val)
+{
+    if (val > 2.5f)
+    {
+        return '\\';
+    }
+    else if (val >= 0.5f && val <= 2.5f)
+    {
+        return '-';
+    }
+    else if (val < 2.5f && val > 0.2f)
+    {
+        return '/';
+    }
+    else if (val <= 0.2f && val >= -0.18f)
+    {
+        return '|';
+    }
+    else if (val < -0.18f && val >= -0.4f)
+    {
+        return '\\';
+    }
+    else if (val < -1.f && val >= -1.5f)
+    {
+        return '-';
+    } 
+    else
+    {
+        return '\\';
+    }
+}
+
 void * lib_handle = NULL;
-char (*get_inclination)(float) = NULL;
+char (*inc_get_inclination)(float) = NULL;
 int lib_version = 0;
 
 void get_func_get_inclination()
@@ -37,7 +70,7 @@ void get_func_get_inclination()
     dll_check_erros(handle);
 
     handle = dll_get_symbol(handle, "get_inclination");
-    get_inclination = (char (*)(float))(handle);
+    inc_get_inclination = (char (*)(float))(handle);
 }
 
 static char numbers_display[64] = {0};
@@ -131,7 +164,7 @@ void render_line(float start_pos_x, float start_pos_y, float end_pos_x, float en
 
                 if (coef <= current_lower_right_coef && coef >= current_upper_left_coef)
                 {
-                    char resolved_inclination = get_inclination(coef);
+                    char resolved_inclination = inc_get_inclination(coef);
 
                     terwind_put_pixel(start_pos_x + i, start_pos_y + j, resolved_inclination);
                 }
@@ -177,7 +210,7 @@ void render_line(float start_pos_x, float start_pos_y, float end_pos_x, float en
 
                 if (coef >= current_upper_right_coef && coef <= current_lower_left_coef)
                 {
-                    char resolved_inclination = get_inclination(coef);
+                    char resolved_inclination = inc_get_inclination(coef);
 
                     terwind_put_pixel(start_pos_x + i, start_pos_y + j, resolved_inclination);
                 }

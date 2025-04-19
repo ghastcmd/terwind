@@ -9,6 +9,6 @@ on the 'render.c' obj.
 > Made a dynamic library loading.
 > Now just need to compile the source code with button press.
 
-- [ ] Make hot reloading to the entire codebase.
+- [x] Make hot reloading to the entire codebase.
 - [ ] Mess with assembly.
 - [ ] Make another line raster.

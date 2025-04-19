@@ -37,6 +37,7 @@ thread_ret_t recompile_code_lib_do(void * ptr)
     char cmd[128] = {0};
     snprintf(cmd, 128, "make code_lib_hot_reload code_lib_version=%i > NUL 2>&1", tmp_version);
     int cmd_run_ret = system(cmd);
+    (void)cmd_run_ret;
 
     logg_status("%i\n", cmd_run_ret);
 

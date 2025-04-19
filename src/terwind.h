@@ -1,5 +1,6 @@
 #pragma once
 #include "structs.h"
+#include "macros.h"
 
 typedef struct time_struct
 {

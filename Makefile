@@ -11,7 +11,7 @@ obj = bin
 pch_include = src/pch
 include = src/include $(pch_include) src
 libs_d = $(foreach var,$(wildcard $(src_d)/$(wild)_lib/.),$(var:/.=))
-src = $(filter-out $(include) $(libs_d), $(patsubst %/.,%,$(wildcard $(src_d)/*/.))) $(src_d)
+src = $(filter-out $(include), $(patsubst %/.,%,$(wildcard $(src_d)/*/.))) $(src_d)
 
 # cli compiler
 CC = gcc
@@ -64,11 +64,11 @@ VPATH = $(src) $(libs_d)
 inc = $(addprefix $(mk_inc),$(include))
 inc_pch = $(addprefix $(mk_inc),$(pch_include))
 
-source = $(foreach var,$(src),$(wildcard $(var)/*.c))
+source = $(foreach var,$(src),$(wildcard $(var)/$(wild).c))
 object = $(patsubst %,$(obj)/$(version)/%.o, $(basename $(notdir $(source))))
 
-code_lib_source = $(foreach var,$(libs_d),$(wildcard $(var)/$(wild).c))
-code_lib_object = $(patsubst %,$(obj)/$(version)/%.o, $(basename $(notdir $(code_lib_source))))
+code_lib_source = $(source)
+code_lib_object = $(patsubst %,$(obj)/$(version)/lib/%.o, $(basename $(notdir $(code_lib_source))))
 
 $(target): $(code_lib_target) $(object)
 	$(SS)echo Compiling target $@
@@ -84,22 +84,25 @@ $(gch): $(pch)
 	$(SS)$(CC) $(mk_obj) $(ldflags) $<
 
 # making dynamic libraries
-$(obj)/$(version)/lib/%.o: %c
+$(obj)/$(version)/lib/%.o: %.c
 	$(SS)echo Compiling lib item $< to $@
 ifeq ($(OS),Windows_NT)
-	$(SS)$(CC) $(mk_obj) $< $(mk_out) $@ $(inc_pch) $(flags)
+	$(SS)$(CC) $(mk_obj) $< $(mk_out) $@ $(inc_pch) $(inc) $(opt) $(flags) -D_EXPORT
 else
-	$(SS)$(CC) $(mk_obj) -fPIC $< $(mk_out) $@ $(inc_pch) $(flags)
+	$(SS)$(CC) $(mk_obj) -fPIC $< $(mk_out) $@ $(inc_pch) $(inc) $(opt) $(flags) -D_EXPORT
 endif
 
-code_lib_hot_reload: $(code_lib_target)
+code_lib_hot_reload: build_lib
+
+build_lib:
+	@$(MAKE) -s $(code_lib_target) -j
 
 $(code_lib_target): $(code_lib_object)
 	$(SS)echo Compiling dynamic library target $@
 ifeq ($(OS),Windows_NT)
-	$(SS)$(CC) -shared $^ $(mk_out) $@ $(inc_pch) $(flags)
+	$(SS)$(CC) -shared $^ $(mk_out) $@ $(inc_pch) $(flags) -D_EXPORT
 else
-	$(SS)$(CC) -shared -fPIC $^ $(mk_out) $@ $(inc_pch) $(flags)
+	$(SS)$(CC) -shared -fPIC $^ $(mk_out) $@ $(inc_pch) $(flags) -D_EXPORT
 endif
 
 help:
