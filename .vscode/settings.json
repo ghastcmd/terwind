@@ -20,5 +20,9 @@
         "thread_keys.h": "c",
         "stdlib.h": "c"
     },
-    "C_Cpp.intelliSenseEngineFallback": "Disabled"
+    "C_Cpp.intelliSenseEngineFallback": "Disabled",
+    "[markdown]": {
+        "editor.defaultFormatter": null,
+        "editor.formatOnSave": false
+    }
 }

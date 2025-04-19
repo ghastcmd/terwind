@@ -1,0 +1,11 @@
+{
+    "tasks": [
+        {
+            "label": "Makefile Build C",
+            "type": "shell",
+            "command": "make build",
+            "problemMatcher": []
+        }
+    ],
+    "version": "2.0.0"
+}
