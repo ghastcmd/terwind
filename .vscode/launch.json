@@ -31,7 +31,7 @@
             "preLaunchTask": "Makefile Build C"
         },
         {
-            "name": "(gdb) Launch Linux",
+            "name": "linux (gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/bin/linux/bin",
@@ -39,8 +39,9 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
-            "externalConsole": false,
+            "externalConsole": true,
             "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",

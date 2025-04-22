@@ -4,6 +4,10 @@
             "label": "Makefile Build C",
             "type": "shell",
             "command": "make build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
             "problemMatcher": []
         }
     ],

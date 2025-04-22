@@ -24,5 +24,6 @@
     "[markdown]": {
         "editor.defaultFormatter": null,
         "editor.formatOnSave": false
-    }
+    },
+    "terminal.external.linuxExec": "xterm"
 }
