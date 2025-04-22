@@ -70,7 +70,9 @@ object = $(patsubst %,$(obj)/$(version)/%.o, $(basename $(notdir $(source))))
 code_lib_source = $(source)
 code_lib_object = $(patsubst %,$(obj)/$(version)/lib/%.o, $(basename $(notdir $(code_lib_source))))
 
+ifneq ($(OS),Windows_NT)
 target_include_local_dyn := -Wl,-rpath,'$$ORIGIN'
+endif
 
 $(target): $(code_lib_target) $(object)
 	$(SS)echo Compiling target $@
