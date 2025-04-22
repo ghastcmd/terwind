@@ -32,6 +32,12 @@ else
 version := linux
 endif
 
+# include dependencies makefile
+dep_dir = $(obj)/$(version)/deps
+dep_dir := $(subst /,\,$(dep_dir))
+
+include $(wildcard $(dep_dir)/*.dep)
+
 # target
 target := $(obj)/$(version)/bin
 code_lib_target = 
@@ -48,6 +54,7 @@ opt =
 
 # additional flags
 flags = -Wall -Wextra -Werror -ggdb
+dependency_flags = -MT $@ -MMD -MP -MF $(dep_dir)/$*.dep
 
 # library links flags
 ldflags =
@@ -80,7 +87,7 @@ $(target): $(code_lib_target) $(object)
 
 $(obj)/$(version)/%.o: %.c
 	$(SS)echo Compiling $< to $@
-	$(SS)$(CC) $(mk_obj) $< $(mk_out) $@ $(inc) $(opt) $(flags)
+	$(SS)$(CC) $(mk_obj) $< $(mk_out) $@ $(inc) $(opt) $(dependency_flags) $(flags)
 
 gch = $(pch:.h=.h.gch)
 $(gch): $(pch)
@@ -91,9 +98,11 @@ $(gch): $(pch)
 $(obj)/$(version)/lib/%.o: %.c
 	$(SS)echo Compiling lib item $< to $@
 ifeq ($(OS),Windows_NT)
-	$(SS)$(CC) $(mk_obj) $< $(mk_out) $@ $(inc_pch) $(inc) $(opt) $(flags) -D_EXPORT
+	$(SS)$(CC) $(mk_obj) $< $(mk_out) $@ $(inc_pch) $(inc) $(opt) \
+	$(dependency_flags) $(flags) -D_EXPORT
 else
-	$(SS)$(CC) $(mk_obj) -fPIC $< $(mk_out) $@ $(inc_pch) $(inc) $(opt) $(flags) -D_EXPORT
+	$(SS)$(CC) $(mk_obj) -fPIC $< $(mk_out) $@ $(inc_pch) $(inc) $(opt) \
+	$(dependency_flags) $(flags) -D_EXPORT
 endif
 
 code_lib_hot_reload: build_lib
@@ -136,6 +145,11 @@ $(obj)/$(version)/.stamp: $(obj)
 $(obj)/$(version)/lib/.stamp: $(obj)/$(version)/.stamp
 	-mkdir $(obj)\$(version)\lib
 	touch $(obj)/$(version)/lib/.stamp
+
+$(dep_dir): $(obj)/$(version)/.stamp
+	-mkdir $(dep_dir)
+	touch $(dep_dir)/.stamp
+
 else
 #linux
 path_v = $(obj)/$(version)/lib/.stamp
@@ -147,9 +161,13 @@ $(obj)/$(version)/.stamp: $(obj)
 $(obj)/$(version)/lib/.stamp: $(obj)/$(version)/.stamp
 	-mkdir $(obj)/$(version)/lib
 	touch $(obj)/$(version)/lib/.stamp
+
+$(dep_dir): $(obj)/$(version)/.stamp
+	-mkdir $(dep_dir)
+	touch $(dep_dir)/.stamp
 endif
 
-compile: $(path_v) $(gch) $(target)
+compile: $(path_v) $(dep_dir) $(gch) $(target)
 
 
 $(obj):

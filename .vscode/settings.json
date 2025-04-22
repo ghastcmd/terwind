@@ -18,7 +18,8 @@
         "files.h": "c",
         "string.h": "c",
         "thread_keys.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "recompile.h": "c"
     },
     "C_Cpp.intelliSenseEngineFallback": "Disabled",
     "[markdown]": {
