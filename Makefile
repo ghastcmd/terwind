@@ -70,9 +70,11 @@ object = $(patsubst %,$(obj)/$(version)/%.o, $(basename $(notdir $(source))))
 code_lib_source = $(source)
 code_lib_object = $(patsubst %,$(obj)/$(version)/lib/%.o, $(basename $(notdir $(code_lib_source))))
 
+target_include_local_dyn := -Wl,-rpath,'$$ORIGIN'
+
 $(target): $(code_lib_target) $(object)
 	$(SS)echo Compiling target $@
-	$(SS)$(CC) $(object) $(mk_out) $@ $(inc) $(opt) $(flags) $(ldflags)
+	$(SS)$(CC) $(object) $(mk_out) $@ $(inc) $(opt) $(flags) $(ldflags) $(target_include_local_dyn)
 
 $(obj)/$(version)/%.o: %.c
 	$(SS)echo Compiling $< to $@
