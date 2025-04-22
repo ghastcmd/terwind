@@ -11,6 +11,7 @@ on the 'render.c' obj.
 
 - [x] Make hot reloading to the entire codebase;
 - [ ] (*) Define debug onscreen;
+- [ ] (**) Dependency makefile;
 - [ ] Mess with assembly;
 - [ ] Make another line raster.
 
