@@ -17,3 +17,11 @@ on the 'render.c' obj.
 - [ ] Mess with assembly;
 - [ ] Make another line raster.
 
+
+## Future plans to mess with in code
+
+- [ ] Native tool profiling
+- [ ] Socket communication
+- [ ] Video codificator (print economy)
+
+- [ ] Simple interpreter and syntax error message
