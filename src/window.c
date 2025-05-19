@@ -34,10 +34,12 @@ void window_draw_box(RenderWindow_t info)
 
     for (size_t i = 0; i < (info.lines_length); ++i)
     {
+        if (i >= (size_t)info.line_count) break;
+        int line_size = strlen(info.lines_content[i]);
         render_letters(info.top_corner_x + 1,
                        info.top_corner_y + 1 + i,
                        info.lines_content[i],
-                       strlen(info.lines_content[i])
+                       line_size < info.width ? line_size : info.width
         ); 
     }
 }
