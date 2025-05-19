@@ -7,6 +7,7 @@
 #include "internal/dll.h"
 #include "recompile.h"
 
+// external
 void render_letters(float start_pos_x, float start_pos_y, const char * to_write, size_t string_size)
 {
     for (size_t i = 0; i < string_size-1; ++i)
@@ -65,6 +66,7 @@ void assign_logger()
     display_numbers = true;
 }
 
+// external
 const char * get_logger()
 {
     return numbers_display;

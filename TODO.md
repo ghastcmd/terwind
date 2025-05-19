@@ -25,3 +25,11 @@ on the 'render.c' obj.
 - [ ] Video codificator (print economy)
 
 - [ ] Simple interpreter and syntax error message
+
+
+## Defining debug window inside the application
+
+The window is with set width and height.
+You can scroll sideways per line.
+You can scroll to see other lines, but this only
+when the total line height is overflown.

@@ -4,3 +4,4 @@ bin/
 *.bak
 samples.c
 *.a
+dbg/

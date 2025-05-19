@@ -4,6 +4,7 @@
 #include "internal/thread.h"
 #include "render.h"
 #include "recompile.h"
+#include "window.h"
 
 void terwind_update_func(GameVars_t* vars, kbd_keys_t key, float delta_time);
 void terwind_draw_func(const GameVars_t* vars);
@@ -136,5 +137,12 @@ void terwind_draw_func(const GameVars_t* vars)
 
     terwind_put_pixel(vars->x_pos + 10, 13, '*');
 
+    RenderWindow_t info = {
+        .width = 20,
+        .line_count = 3,
+        .top_corner_x = 2,
+        .top_corner_y = 10,
+    };
 
+    window_draw_box(info);
 }
