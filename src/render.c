@@ -10,10 +10,11 @@
 // external
 void render_letters(float start_pos_x, float start_pos_y, const char * to_write, size_t string_size)
 {
-    for (size_t i = 0; i < string_size-1; ++i)
+    for (size_t i = 0; i < string_size; ++i)
     {
         terwind_put_pixel(start_pos_x + i, start_pos_y, to_write[i]);
     }
+    return;
 }
 
 DLLEXPORT

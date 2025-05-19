@@ -113,7 +113,7 @@ void terwind_draw_func(const GameVars_t* vars)
 {
     terwind_put_pixel(vars->x_pos * 1.2, vars->y_pos+3, 94);
 
-    render_letters(vars->x_pos, 2, "this is the start", sizeof("this is the start"));
+    render_letters(vars->x_pos, 2, "this is the start", sizeof("this is the start") - 1);
 
     render_line(2, 10, 10, 1, true);
     float spacing = 12.f;
@@ -137,11 +137,20 @@ void terwind_draw_func(const GameVars_t* vars)
 
     terwind_put_pixel(vars->x_pos + 10, 13, '*');
 
+    char *to_render_lines[] = {
+        "balalafu zubumafu testing string",
+        "another line",
+        "this is the shits",
+        "trix",
+    };
+
     RenderWindow_t info = {
         .width = 20,
         .line_count = 3,
         .top_corner_x = 2,
         .top_corner_y = 10,
+        .lines_content = &to_render_lines[0],
+        .lines_length = sizeof(to_render_lines) / sizeof(char*),
     };
 
     window_draw_box(info);
